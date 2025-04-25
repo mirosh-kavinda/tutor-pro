@@ -26,7 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await Future.delayed(const Duration(seconds:2)); // Simulate loading
 
     if (mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreenDashboard()),
       );

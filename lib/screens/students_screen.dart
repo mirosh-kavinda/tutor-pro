@@ -53,11 +53,11 @@ class StudentsScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(33, 39, 33, 76),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(33, 39, 33, 76),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Classes',
                           style: TextStyle(
                             color: Colors.white,
@@ -67,7 +67,7 @@ class StudentsScreen extends StatelessWidget {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32),
                         Row(
                           children: [
                             Expanded(
@@ -76,7 +76,7 @@ class StudentsScreen extends StatelessWidget {
                                 imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/3990f205f7ff00e997615ae0e3382428fe297e49?placeholderIfAbsent=true&apiKey=1ea246e03b424a6ea478dd7a91974dba',
                               ),
                             ),
-                            const SizedBox(width: 46),
+                            SizedBox(width: 46),
                             Expanded(
                               child: GradeCardWidget(
                                 gradeNumber: '7',
@@ -85,7 +85,7 @@ class StudentsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 38),
+                        SizedBox(height: 38),
                         Row(
                           children: [
                             Expanded(
@@ -94,7 +94,7 @@ class StudentsScreen extends StatelessWidget {
                                 imageUrl: 'https://cdn.builder.io/api/v1/image/assets/TEMP/3990f205f7ff00e997615ae0e3382428fe297e49?placeholderIfAbsent=true&apiKey=1ea246e03b424a6ea478dd7a91974dba',
                               ),
                             ),
-                            const SizedBox(width: 46),
+                            SizedBox(width: 46),
                             Expanded(
                               child: GradeCardWidget(
                                 gradeNumber: '9',

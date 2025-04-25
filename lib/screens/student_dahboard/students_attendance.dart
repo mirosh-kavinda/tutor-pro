@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/attendance_list_item.dart';
-import '../widgets/custom_app_bar.dart';
+import '../../widgets/attendance_list_item.dart';
+import '../../widgets/custom_app_bar.dart';
 
 class AttendanceSheetScreen extends StatelessWidget {
-  const AttendanceSheetScreen({Key? key}) : super(key: key);
+  const AttendanceSheetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

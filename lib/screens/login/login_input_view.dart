@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_text_field.dart';
+import '../student_dahboard/student_profile.dart';
 
 class LoginInputView extends StatelessWidget {
   final String typeId;
@@ -86,15 +87,14 @@ class LoginInputView extends StatelessWidget {
                           width: 270,
                           child: ElevatedButton(
                             onPressed: () {
-                              // Handle login logic here, you can use `typeId`
-                              print("Logging in as $typeId");
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        LoginInputView(typeId: "teacher")),
-                              );
+                              if (typeId == "student") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const StudentProfileCard()),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),
