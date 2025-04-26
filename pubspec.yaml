@@ -7,10 +7,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+
 dev_dependencies:
+  flutter_flavorizr: ^2.0.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+
 flutter:
   uses-material-design: true
   assets:
@@ -23,4 +26,36 @@ flutter:
           weight: 700
         - asset: assets/fonts/Poppins-ExtraBold.ttf
           weight: 800
-  
+
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "mode"
+      flavors:
+        admin:
+          applicationId: "com.example.admin"
+          resValues:
+            string:
+              app_name: "TutorPro Admin"
+        user:
+          applicationId: "com.example.user"
+          resValues:
+            string:
+              app_name: "TutorPro User"
+    ios:
+      flavors:
+        admin:
+          bundleId: "com.example.admin"
+          buildSettings:
+            PRODUCT_NAME: "TutorPro Admin"
+        user:
+          bundleId: "com.example.user"
+          buildSettings:
+            PRODUCT_NAME: "TutorPro User"
+  flavors:
+    admin:
+      appName: "TutorPro Admin"
+      target: "lib/main_admin.dart"
+    user:
+      appName: "TutorPro User"
+      target: "lib/main_user.dart"

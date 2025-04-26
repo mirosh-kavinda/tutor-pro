@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../login/login_admin.dart';
 import '../login/login_dashboard.dart';
 import '../../styles/styles.dart';
 
 class OnboardingScreen extends StatefulWidget {
+ 
   const OnboardingScreen({super.key});
 
   @override
@@ -20,6 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _startLoadingAndNavigate() async {
     setState(() {
+      debugPrint(appFlavor);
       _isLoading = true;
     });
 
@@ -28,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (mounted) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreenDashboard()),
+        MaterialPageRoute(builder: (context) =>appFlavor=="user"? const LoginScreenDashboard():AdminLoginView()),
       );
     }
   }

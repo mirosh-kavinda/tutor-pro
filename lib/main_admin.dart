@@ -1,21 +1,22 @@
-
 import 'package:flutter/material.dart';
-import 'screens/onboarding/onboarding_screen.dart'; 
+import 'screens/onboarding/onboarding_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp(appTitle: 'TutorPro Admin'));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  
+  final String appTitle;
+ 
+  const MyApp({super.key, required this.appTitle});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TutorPro',
+      title: appTitle,
       theme: ThemeData(),
-      home: const OnboardingScreen(),
+      home: OnboardingScreen(),
     );
   }
 }

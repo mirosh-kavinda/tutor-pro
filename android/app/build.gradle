@@ -9,7 +9,17 @@ android {
     namespace = "com.example.tutorpro"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
-
+ flavorDimensions "mode"
+    productFlavors {
+        admin {
+            dimension "mode"
+            applicationId "com.example.admin"
+        }
+        user {
+            dimension "mode"
+            applicationId "com.example.user"
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
