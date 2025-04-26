@@ -173,7 +173,7 @@ class StudentPaymentSheet extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const StudentProfileCard(),
+                                         StudentProfileCard(),
                                   ),
                                   (route) =>
                                       false, // This ensures all previous routes are removed

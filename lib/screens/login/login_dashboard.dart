@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_input_view.dart';
 
 class LoginScreenDashboard extends StatelessWidget {
-  const LoginScreenDashboard({super.key});
+  const LoginScreenDashboard({super.key ,});
 
   void _navigateToTeacherLogin(BuildContext context) {
     Navigator.push(

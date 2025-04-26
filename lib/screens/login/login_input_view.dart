@@ -1,21 +1,80 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/custom_text_field.dart';
 import '../student_dahboard/student_profile.dart';
 import '../teacher_dashboard/teacher_profile.dart';
 
-class LoginInputView extends StatelessWidget {
+class LoginInputView extends StatefulWidget {
   final String typeId;
 
-  LoginInputView({super.key, required this.typeId});
+  const LoginInputView({super.key, required this.typeId});
 
+  @override
+  _LoginInputViewState createState() => _LoginInputViewState();
+}
+
+class _LoginInputViewState extends State<LoginInputView> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.addListener(_validateInputs);
+    _passwordController.addListener(_validateInputs);
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _validateInputs() {
+    setState(() {
+      _isButtonEnabled = _usernameController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty;
+    });
+  }
+
+  void userAuth(BuildContext context) async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _usernameController.text,
+        password: _passwordController.text,
+      );
+      debugPrint(credential.user?.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => widget.typeId == "student"
+              ? const StudentProfileCard()
+              : const TeacherProfileCard(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      final message = e.message ?? 'An error occurred. Please try again.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            style: const TextStyle(
+                fontSize: 14,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.red[400],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      
       body: Stack(
         children: [
           Positioned.fill(
@@ -50,7 +109,7 @@ class LoginInputView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    typeId == 'teacher'
+                    widget.typeId == 'teacher'
                         ? "Welcome Back Teacher "
                         : "Welcome Back Student",
                     textAlign: TextAlign.center,
@@ -88,15 +147,9 @@ class LoginInputView extends StatelessWidget {
                         SizedBox(
                           width: 270,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => typeId == "student"
-                                        ? const StudentProfileCard()
-                                        : const TeacherProfileCard()),
-                              );
-                            },
+                            onPressed: _isButtonEnabled
+                                ? () => userAuth(context)
+                                : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),
                               padding: const EdgeInsets.symmetric(vertical: 15),
