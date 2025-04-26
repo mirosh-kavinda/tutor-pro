@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_text_field.dart';
 import '../student_dahboard/student_profile.dart';
+import '../teacher_dashboard/teacher_profile.dart';
 
 class LoginInputView extends StatelessWidget {
   final String typeId;
@@ -14,6 +15,7 @@ class LoginInputView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      
       body: Stack(
         children: [
           Positioned.fill(
@@ -50,7 +52,7 @@ class LoginInputView extends StatelessWidget {
                   Text(
                     typeId == 'teacher'
                         ? "Welcome Back Teacher "
-                        : "Welcome BackStudent",
+                        : "Welcome Back Student",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: 'Poppins',
@@ -87,14 +89,13 @@ class LoginInputView extends StatelessWidget {
                           width: 270,
                           child: ElevatedButton(
                             onPressed: () {
-                              if (typeId == "student") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const StudentProfileCard()),
-                                );
-                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => typeId == "student"
+                                        ? const StudentProfileCard()
+                                        : const TeacherProfileCard()),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../widgets/attendance_list_item.dart';
 import '../../widgets/custom_app_bar.dart';
-import 'student_payments.dart';
+import '../../widgets/payment_list_item.dart';
+import 'student_profile.dart';
 
-class AttendanceSheetScreen extends StatelessWidget {
-  const AttendanceSheetScreen({super.key});
+class StudentPaymentSheet extends StatelessWidget {
+  const StudentPaymentSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,9 @@ class AttendanceSheetScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomAppBar(title: "Attendance Sheet",),
+                        const CustomAppBar(
+                          title: "Payment History",
+                        ),
                         // Date Section
                         Container(
                           color: Colors.white,
@@ -92,14 +95,15 @@ class AttendanceSheetScreen extends StatelessWidget {
                         ),
                         // Header Row
                         const SizedBox(
-                          height: 20,
+                          height: 50,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth <= 640 ? 15 : 20),
                           child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                                Expanded(
+                              Expanded(
                                 flex: 2,
                                 child: Text(
                                   'S.No',
@@ -111,9 +115,9 @@ class AttendanceSheetScreen extends StatelessWidget {
                                 ),
                               ),
                               Expanded(
-                                flex:4,
+                                flex: 2,
                                 child: Text(
-                                  'Name',
+                                  'Month',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -129,7 +133,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                           child: const Divider(
                             color: Colors.grey,
                             thickness: 1,
-                           
+                            height: 20,
                           ),
                         ),
                         // Attendance List
@@ -140,31 +144,18 @@ class AttendanceSheetScreen extends StatelessWidget {
                             ),
                             child: ListView(
                               children: const [
-                                AttendanceListItem(
+                                PaymentListItem(
+                                    date: '01/01/25', name: 'Lorem spein'),
+                                PaymentListItem(
                                   date: '01/01/25',
                                   name: 'Lorem spein',
-                                  isPresent: false,
                                 ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
+                                PaymentListItem(
+                                    date: '01/01/25', name: 'Lorem spein'),
+                                PaymentListItem(
+                                    date: '01/01/25', name: 'Lorem spein'),
+                                PaymentListItem(
+                                    date: '01/01/25', name: 'Lorem spein'),
                               ],
                             ),
                           ),
@@ -178,11 +169,14 @@ class AttendanceSheetScreen extends StatelessWidget {
                                 : Alignment.centerRight,
                             child: ElevatedButton(
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const StudentPaymentSheet()),
+                                    builder: (context) =>
+                                        const StudentProfileCard(),
+                                  ),
+                                  (route) =>
+                                      false, // This ensures all previous routes are removed
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -194,7 +188,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                                 ),
                               ),
                               child: const Text(
-                                'VIEW PAYMENTS',
+                                'Exit',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

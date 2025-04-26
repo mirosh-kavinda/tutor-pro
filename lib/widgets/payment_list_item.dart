@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 
-class AttendanceListItem extends StatelessWidget {
+class PaymentListItem extends StatelessWidget {
   final String date;
   final String name;
-  final bool isPresent;
 
-  const AttendanceListItem({
-    Key? key,
+  const PaymentListItem({
+    super.key,
     required this.date,
     required this.name,
-    required this.isPresent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 2,
+            flex:2,
             child: Text(
               date,
               style: const TextStyle(
@@ -30,22 +27,13 @@ class AttendanceListItem extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Text(
               name,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
               ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              width: 50,
-              height: 20,
-              color:
-                  isPresent ? const Color(0xFF44E91F) : const Color(0xFFF32929),
             ),
           ),
         ],

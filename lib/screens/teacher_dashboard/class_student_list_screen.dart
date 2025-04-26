@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../widgets/attendance_list_item.dart';
 import '../../widgets/custom_app_bar.dart';
-import 'student_payments.dart';
+import '../../widgets/payment_list_item.dart';
+import '../student_dahboard/student_payments.dart';
+import 'class_student_attendance_screen.dart';
 
-class AttendanceSheetScreen extends StatelessWidget {
-  const AttendanceSheetScreen({super.key});
+
+class ClassStudentListScreen extends StatelessWidget {
+  final int classId;
+  const ClassStudentListScreen({super.key,required this.classId});
 
   @override
   Widget build(BuildContext context) {
@@ -54,53 +57,27 @@ class AttendanceSheetScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
-                            'assets/images/home_student_gradient.png'),
+                            'assets/images/home_teacher_gradient.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomAppBar(title: "Attendance Sheet",),
-                        // Date Section
-                        Container(
-                          color: Colors.white,
-                          width: screenWidth * 2 / 3,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth <= 640 ? 15 : 20,
-                            vertical: screenWidth <= 640 ? 15 : 20,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Date :',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Image.network(
-                                'https://cdn.builder.io/api/v1/image/assets/TEMP/ab740c0f7069c364ea2d25e2c7e3e09a38bf7bdc?placeholderIfAbsent=true',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ],
-                          ),
-                        ),
+                        const CustomAppBar(title: "Student List",),
+                       
                         // Header Row
                         const SizedBox(
-                          height: 20,
+                          height: 50,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth <= 640 ? 15 : 20),
                           child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                                Expanded(
-                                flex: 2,
+                              Expanded(
+                                flex:2,
                                 child: Text(
                                   'S.No',
                                   style: TextStyle(
@@ -110,8 +87,8 @@ class AttendanceSheetScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Expanded(
-                                flex:4,
+                               Expanded(
+                                flex:2,
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
@@ -129,7 +106,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                           child: const Divider(
                             color: Colors.grey,
                             thickness: 1,
-                           
+                            height: 20,
                           ),
                         ),
                         // Attendance List
@@ -140,30 +117,27 @@ class AttendanceSheetScreen extends StatelessWidget {
                             ),
                             child: ListView(
                               children: const [
-                                AttendanceListItem(
+                                PaymentListItem(
                                   date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: false,
+                                  name: 'Lorem spein'
+                                
                                 ),
-                                AttendanceListItem(
+                                PaymentListItem(
                                   date: '01/01/25',
                                   name: 'Lorem spein',
-                                  isPresent: true,
+                                 
                                 ),
-                                AttendanceListItem(
+                                PaymentListItem(
                                   date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
+                                  name: 'Lorem spein'
                                 ),
-                                AttendanceListItem(
+                                PaymentListItem(
                                   date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
+                                  name: 'Lorem spein'
                                 ),
-                                AttendanceListItem(
+                                PaymentListItem(
                                   date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
+                                  name: 'Lorem spein'
                                 ),
                               ],
                             ),
@@ -182,7 +156,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const StudentPaymentSheet()),
+                                          const ClassStudentAttendanceScreen()),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -194,7 +168,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                                 ),
                               ),
                               child: const Text(
-                                'VIEW PAYMENTS',
+                                'Mark Attendance',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tutorpro/screens/onboarding/onboarding_screen.dart';
 
 import 'students_attendance.dart';
 
 class StudentProfileCard extends StatelessWidget {
-  const StudentProfileCard({Key? key}) : super(key: key);
+  const StudentProfileCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,26 +12,29 @@ class StudentProfileCard extends StatelessWidget {
       body: Stack(
         children: [
           Positioned(
-            top: 60,
+            top: 0,
             left: 0,
             right: 0,
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/images/home_student_cover.png',
-                  height: 250,
-                  fit: BoxFit.cover,
-                ),
-              ],
+            child: Image.asset(
+              'assets/images/home_student_cover.png',
+              height: 250,
+              fit: BoxFit.fill,
             ),
           ),
           Positioned(
             top: 40,
-            left: 16,
+            right: 16,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
+              icon: const Icon(Icons.logout_outlined, color:Colors.black ,size: 30,),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OnboardingScreen(),
+                  ),
+                  (route) =>
+                      false, // This ensures all previous routes are removed
+                );
               },
             ),
           ),
@@ -100,12 +104,12 @@ class StudentProfileCard extends StatelessWidget {
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AttendanceSheetScreen()),
-                                );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AttendanceSheetScreen()),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF265D72),
