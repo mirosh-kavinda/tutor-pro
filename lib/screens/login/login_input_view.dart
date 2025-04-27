@@ -1,24 +1,52 @@
 import 'package:flutter/material.dart';
+import '../../repository/handleAuthLogin.dart';
 import '../../widgets/custom_text_field.dart';
-import '../student_dahboard/student_profile.dart';
-import '../teacher_dashboard/teacher_profile.dart';
 
-class LoginInputView extends StatelessWidget {
+class LoginInputView extends StatefulWidget {
   final String typeId;
 
-  LoginInputView({super.key, required this.typeId});
+  const LoginInputView({super.key, required this.typeId});
 
+  @override
+  _LoginInputViewState createState() => _LoginInputViewState();
+}
+
+class _LoginInputViewState extends State<LoginInputView> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.addListener(_validateInputs);
+    _passwordController.addListener(_validateInputs);
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _validateInputs() {
+    setState(() {
+      _isButtonEnabled = (widget.typeId != "admin" &&
+              _usernameController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty) ||
+          widget.typeId == "admin" && _passwordController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      
       body: Stack(
         children: [
-          Positioned.fill(
+          Positioned(
+            top: 40,
             child: Image.asset(
               'assets/images/login_page_header.png',
               fit: BoxFit.cover,
@@ -49,14 +77,12 @@ class LoginInputView extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    typeId == 'teacher'
-                        ? "Welcome Back Teacher "
-                        : "Welcome Back Student",
+                  const Text(
+                    " WELCOME BACK TO NENEKRA EDUCATION INSTITUTE",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontSize: 20,
+                      fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -73,13 +99,15 @@ class LoginInputView extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        CustomTextField(
-                          controller: _usernameController,
-                          label: 'Username',
-                          prefixIcon: Icons.person,
-                        ),
+                        if (widget.typeId != "admin")
+                          CustomTextField(
+                            controller: _usernameController,
+                            label: 'Username',
+                            prefixIcon: Icons.person,
+                          ),
                         const SizedBox(height: 20),
                         CustomTextField(
+                          isPassword: true,
                           controller: _passwordController,
                           label: 'Password',
                           prefixIcon: Icons.lock,
@@ -88,15 +116,13 @@ class LoginInputView extends StatelessWidget {
                         SizedBox(
                           width: 270,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => typeId == "student"
-                                        ? const StudentProfileCard()
-                                        : const TeacherProfileCard()),
-                              );
-                            },
+                            onPressed: _isButtonEnabled
+                                ? () => userAuth(
+                                    context,
+                                    widget.typeId,
+                                    _usernameController.text,
+                                    _passwordController.text)
+                                : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),
                               padding: const EdgeInsets.symmetric(vertical: 15),

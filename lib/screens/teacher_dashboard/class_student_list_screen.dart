@@ -1,13 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:tutorpro/repository/teacher_repository.dart';
+import '../../widgets/attendance_list_item.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/payment_list_item.dart';
-import '../student_dahboard/student_payments.dart';
+import '../../widgets/download_pdf.dart';
 import 'class_student_attendance_screen.dart';
 
+class ClassStudentListScreen extends StatefulWidget {
+  final String classId;
+  const ClassStudentListScreen({super.key, required this.classId});
 
-class ClassStudentListScreen extends StatelessWidget {
-  final int classId;
-  const ClassStudentListScreen({super.key,required this.classId});
+  @override
+  State<ClassStudentListScreen> createState() => _ClassStudentListScreenState();
+}
+
+class _ClassStudentListScreenState extends State<ClassStudentListScreen> {
+  List<dynamic>? classData;
+  List<dynamic>? originalClassData;
+
+  void _downloadPDF(context, List<dynamic> mappedData) {
+    if (mappedData.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => DownloadAttendanceDialog(
+          data: mappedData,
+          documentType: "studentlist",
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +83,13 @@ class ClassStudentListScreen extends StatelessWidget {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const CustomAppBar(title: "Student List",),
-                       
+                        CustomAppBar(
+                            title: "Student List",
+                            onDownloadPressed: () => _downloadPDF(
+                                context, classData?[0]['students'] ?? [])),
+
                         // Header Row
                         const SizedBox(
                           height: 50,
@@ -77,7 +101,7 @@ class ClassStudentListScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Expanded(
-                                flex:2,
+                                flex: 2,
                                 child: Text(
                                   'S.No',
                                   style: TextStyle(
@@ -87,8 +111,8 @@ class ClassStudentListScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                               Expanded(
-                                flex:2,
+                              Expanded(
+                                flex: 2,
                                 child: Text(
                                   'Name',
                                   style: TextStyle(
@@ -111,53 +135,118 @@ class ClassStudentListScreen extends StatelessWidget {
                         ),
                         // Attendance List
                         Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth <= 640 ? 15 : 20,
-                            ),
-                            child: ListView(
-                              children: const [
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein'
-                                
-                                ),
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                 
-                                ),
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein'
-                                ),
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein'
-                                ),
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein'
-                                ),
-                              ],
-                            ),
+                          child: FutureBuilder<List<Map<String, dynamic>>>(
+                            future:
+                                fetchClassStudentData(classId: widget.classId),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child:
+                                        Text('No attendance records found.'));
+                              } else {
+                                // Store original attendance list once
+                                if (originalClassData == null) {
+                                  originalClassData = snapshot.data!;
+                                  classData ??= snapshot.data!;
+                                }
+
+                                return classData == null || classData!.isEmpty
+                                    ? const Center(
+                                        child: Text(
+                                          'No records found.',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        padding: EdgeInsets.only(top: 10),
+                                        itemCount:
+                                            classData![0]['students']!.length,
+                                        itemBuilder: (context, index) {
+                                          final record =
+                                              classData![0]['students'][index];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0, vertical: 4),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    record['student_id'],
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    record['student_name'],
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                              }
+                            },
                           ),
                         ),
                         // View Payments Button
                         Padding(
                           padding: EdgeInsets.all(screenWidth <= 640 ? 15 : 20),
                           child: Align(
-                            alignment: screenWidth <= 640
-                                ? Alignment.center
-                                : Alignment.centerRight,
+                            alignment: Alignment.centerRight,
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ClassStudentAttendanceScreen()),
-                                );
+                              onPressed: () async {
+                                bool isExist =
+                                    await isAttendanceSubmitted(widget.classId);
+                                if (!isExist) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ClassStudentAttendanceScreen(
+                                              classId: widget.classId,
+                                              studentList: classData?[0]
+                                                  ['students'],
+                                            )),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        "Attendance Already Submited For today",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      backgroundColor: Colors.red[400],
+                                    ),
+                                  );
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,

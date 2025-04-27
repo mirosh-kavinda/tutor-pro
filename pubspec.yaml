@@ -8,7 +8,16 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+<<<<<<< HEAD
   intl: ^0.18.0
+=======
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  cloud_firestore: ^5.6.6
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  provider: ^6.1.4
+>>>>>>> fce73ea821287d509671ac1215af4b8f602d3c32
 
 dev_dependencies:
   flutter_flavorizr: ^2.0.0

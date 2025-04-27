@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../student_dahboard/student_payments.dart';
+import '../../repository/teacher_repository.dart';
 import 'teacher_profile.dart';
 
 class ClassStudentAttendanceScreen extends StatefulWidget {
-  const ClassStudentAttendanceScreen({super.key});
+  final List<dynamic> studentList;
+  final String classId;
+  const ClassStudentAttendanceScreen(
+      {super.key, required this.classId, required this.studentList});
 
   @override
   State<ClassStudentAttendanceScreen> createState() =>
@@ -13,20 +15,27 @@ class ClassStudentAttendanceScreen extends StatefulWidget {
 
 class _ClassStudentAttendanceScreenState
     extends State<ClassStudentAttendanceScreen> {
-  late List<Map<String, dynamic>> students;
+  late List<dynamic> students = widget.studentList;
+  final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    students = List.generate(
-      8,
-      (index) => {
-        'name': 'Student ${index + 1}',
-        'image': 'assets/images/Teacher3.png',
-        'isPresent':
-            null, // null means no selection, true for present, false for absent
-      },
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
+    if (pickedDate != null) {
+      setState(() {
+        _dateController.text =
+            "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+      });
+    }
   }
 
   @override
@@ -78,10 +87,6 @@ class _ClassStudentAttendanceScreenState
                   Container(
                     color: Colors.white,
                     width: screenWidth * 2 / 3,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth <= 640 ? 15 : 20,
-                      vertical: screenWidth <= 640 ? 15 : 20,
-                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -94,10 +99,26 @@ class _ClassStudentAttendanceScreenState
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Image.network(
-                          'https://cdn.builder.io/api/v1/image/assets/TEMP/ab740c0f7069c364ea2d25e2c7e3e09a38bf7bdc?placeholderIfAbsent=true',
-                          width: 25,
-                          height: 25,
+                        Expanded(
+                          child: TextField(
+                            controller: _dateController,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              hintText: 'Select Date',
+                              hintStyle: TextStyle(fontSize: 14),
+                              border: null,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                            ),
+                            onTap: () => _selectDate(context),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.calendar_today,
+                              color: Colors.black),
+                          onPressed: () => _selectDate(context),
                         ),
                       ],
                     ),
@@ -113,57 +134,54 @@ class _ClassStudentAttendanceScreenState
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            'S.No',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          'S.No',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            'Name',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          'Name',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            'Present',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Present',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            'Absent',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          'Absent',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const Divider(
                     thickness: 1,
@@ -173,59 +191,68 @@ class _ClassStudentAttendanceScreenState
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListView.builder(
+                      padding: EdgeInsets.all(0),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
                         final student = students[index];
-                        return ListTile(
-                          leading: Text(
-                            '${index + 1}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
+                        return Row(children: [
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              student['student_id']!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
-                          title: Text(
-                            student['name']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              student['student_name']!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                fillColor: MaterialStateProperty.all(
-                                  student['isPresent'] == true
-                                      ? Colors.green
-                                      : Colors.grey,
-                                ),
-                                value: student['isPresent'] == true,
-                                onChanged: (value) {
-                                  setState(() {
-                                    students[index]['isPresent'] = true;
-                                  });
-                                },
+                          Expanded(
+                            flex: 2,
+                            child: Checkbox(
+                              fillColor: MaterialStateProperty.all(
+                                student['isPresent'] == true
+                                    ? Colors.green
+                                    : Colors.grey,
                               ),
-                              const SizedBox(width: 8),
-                              Checkbox(
-                                fillColor: MaterialStateProperty.all(
-                                  student['isPresent'] == false
-                                      ? Colors.red
-                                      : Colors.grey,
-                                ),
-                                value: student['isPresent'] == false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    students[index]['isPresent'] = false;
-                                  });
-                                },
-                              ),
-                            ],
+                              value: student['isPresent'] == true,
+                              onChanged: (value) {
+                                setState(() {
+                                  students[index]['isPresent'] = true;
+                                });
+                              },
+                            ),
                           ),
-                        );
+                          Expanded(
+                            flex: 2,
+                            child: Checkbox(
+                              fillColor: MaterialStateProperty.all(
+                                student['isPresent'] == false
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                              value: student['isPresent'] == false,
+                              onChanged: (value) {
+                                setState(() {
+                                  students[index]['isPresent'] = false;
+                                });
+                              },
+                            ),
+                          )
+                        ]);
                       },
                     ),
                   ),
@@ -233,18 +260,30 @@ class _ClassStudentAttendanceScreenState
                     padding: EdgeInsets.symmetric(
                         vertical: screenWidth <= 640 ? 15 : 20),
                     child: Align(
-                      alignment: screenWidth <= 640
-                          ? Alignment.center
-                          : Alignment.centerRight,
+                      alignment: Alignment.centerRight,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const TeacherProfileCard()),
-                            (_) => false,
-                          );
+                        onPressed: () async{
+                          addClassAttendance(widget.classId,_dateController.text,students)
+                          .then((_) {
+                              Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TeacherProfileCard(),
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Attendance submitted successfully!'),
+                              ),
+                            );
+                          
+                          }).catchError((error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error: $error'),
+                              ),
+                            );
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

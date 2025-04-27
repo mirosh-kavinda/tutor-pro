@@ -1,11 +1,75 @@
 import 'package:flutter/material.dart';
-import '../../widgets/attendance_list_item.dart';
+import '../../repository/student_repository.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/download_pdf.dart';
 import '../../widgets/payment_list_item.dart';
 import 'student_profile.dart';
 
-class StudentPaymentSheet extends StatelessWidget {
-  const StudentPaymentSheet({super.key});
+class StudentPaymentSheet extends StatefulWidget {
+  final String studentId;
+  const StudentPaymentSheet({super.key, required this.studentId});
+
+  @override
+  _StudentPaymentSheetState createState() => _StudentPaymentSheetState();
+}
+
+class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
+  DateTime? fromDate;
+  DateTime? toDate;
+  List<Map<String, dynamic>>? paymentData;
+  List<Map<String, dynamic>>? originalPaymentData;
+  bool isNoRecordFound = true;
+
+  void _selectDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: fromDate != null && toDate != null
+          ? DateTimeRange(start: fromDate!, end: toDate!)
+          : null,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        fromDate = picked.start;
+        toDate = picked.end;
+        _filterAttendanceByDateRange(fromDate!, toDate!);
+      });
+    }
+  }
+
+  void _filterAttendanceByDateRange(DateTime from, DateTime to) {
+    if (originalPaymentData == null) return;
+
+    final filteredData = originalPaymentData!.where((record) {
+      final recordDate = DateTime.parse(record['date']);
+      return (recordDate.isAtSameMomentAs(from) || recordDate.isAfter(from)) &&
+          (recordDate.isAtSameMomentAs(to) || recordDate.isBefore(to));
+    }).toList();
+
+    setState(() {
+      paymentData = filteredData;
+    });
+  }
+
+  void _clearDateFilter() {
+    setState(() {
+      fromDate = null;
+      toDate = null;
+      paymentData = originalPaymentData;
+    });
+  }
+
+  void _downloadPDF(context, List<dynamic> mappedData) {
+    if (mappedData.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            DownloadAttendanceDialog(data: mappedData, documentType: "payment"),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +108,7 @@ class StudentPaymentSheet extends StatelessWidget {
                     },
                   ),
                 ),
+
                 // Main Content Container
                 Positioned(
                   top: screenWidth <= 640 ? 200 : 276,
@@ -62,41 +127,61 @@ class StudentPaymentSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomAppBar(
-                          title: "Payment History",
-                        ),
-                        // Date Section
-                        Container(
-                          color: Colors.white,
-                          width: screenWidth * 2 / 3,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth <= 640 ? 15 : 20,
-                            vertical: screenWidth <= 640 ? 15 : 20,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Date :',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                        CustomAppBar(
+                            title: "Payment History",
+                            onDownloadPressed: () =>
+                                _downloadPDF(context, paymentData ?? [])),
+
+                        const SizedBox(height: 10),
+
+                        // Date Range Selector
+                        GestureDetector(
+                          onTap: () => _selectDateRange(context),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    fromDate != null && toDate != null
+                                        ? 'From: ${fromDate!.toLocal().toString().split(' ')[0]} To: ${toDate!.toLocal().toString().split(' ')[0]}'
+                                        : 'Select Date Range',
+                                    style: TextStyle(
+                                      fontFamily: 'Popins',
+                                      color: Colors.grey[800],
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Image.network(
-                                'https://cdn.builder.io/api/v1/image/assets/TEMP/ab740c0f7069c364ea2d25e2c7e3e09a38bf7bdc?placeholderIfAbsent=true',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ],
+                                const Icon(
+                                  Icons.calendar_month,
+                                  size: 25,
+                                  color: Colors.black,
+                                ),
+                                if (fromDate != null && toDate != null)
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: _clearDateFilter,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
+
+                        const SizedBox(height: 30),
+
                         // Header Row
-                        const SizedBox(
-                          height: 50,
-                        ),
+
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth <= 640 ? 15 : 20),
@@ -106,7 +191,7 @@ class StudentPaymentSheet extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  'S.No',
+                                  'Id',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -117,7 +202,29 @@ class StudentPaymentSheet extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  'Month',
+                                  'subject',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
+                                  'Date',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  'Amount',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -128,39 +235,81 @@ class StudentPaymentSheet extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          width: screenWidth * 2 / 3,
-                          child: const Divider(
-                            color: Colors.grey,
-                            thickness: 1,
-                            height: 20,
-                          ),
+
+                        const Divider(
+                          color: Colors.grey,
+                          thickness: 1,
+                          height: 20,
                         ),
-                        // Attendance List
+
+                        // Payment List with FutureBuilder
                         Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth <= 640 ? 15 : 20,
-                            ),
-                            child: ListView(
-                              children: const [
-                                PaymentListItem(
-                                    date: '01/01/25', name: 'Lorem spein'),
-                                PaymentListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                ),
-                                PaymentListItem(
-                                    date: '01/01/25', name: 'Lorem spein'),
-                                PaymentListItem(
-                                    date: '01/01/25', name: 'Lorem spein'),
-                                PaymentListItem(
-                                    date: '01/01/25', name: 'Lorem spein'),
-                              ],
-                            ),
+                          child: FutureBuilder<List<Map<String, dynamic>>>(
+                            future:
+                                fetchPaymentData(studentId: widget.studentId),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (snapshot.hasError) {
+                                return const Center(
+                                  child: Text('Error loading payment data.'),
+                                );
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return const Center(
+                                  child: Text('No payment records found.'),
+                                );
+                              }
+
+                              // Store original payment list once
+                              if (originalPaymentData == null) {
+                                isNoRecordFound = false;
+                                originalPaymentData = snapshot.data!;
+                                paymentData ??= snapshot.data!;
+                              }
+
+                              return paymentData == null || paymentData!.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'No records found.',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: EdgeInsets.only(top: 10),
+                                      itemCount: paymentData!.length,
+                                      itemBuilder: (context, index) {
+                                        final item = paymentData![index];
+                                        return PaymentListItem(
+                                          date: item['date'] ?? 'Unknown data',
+                                          pid: item['payment_id'] ??
+                                              'Unknown data',
+                                          subject:
+                                              item['subject'] ?? 'Unknown data',
+                                          amount: double.tryParse(
+                                                      item['payment']
+                                                              ?.toString() ??
+                                                          '0')
+                                                  ?.toInt() ??
+                                              0,
+                                        );
+                                      },
+                                    );
+                            },
                           ),
                         ),
-                        // View Payments Button
+
+                        // Exit Button
                         Padding(
                           padding: EdgeInsets.all(screenWidth <= 640 ? 15 : 20),
                           child: Align(
@@ -175,8 +324,7 @@ class StudentPaymentSheet extends StatelessWidget {
                                     builder: (context) =>
                                         const StudentProfileCard(),
                                   ),
-                                  (route) =>
-                                      false, // This ensures all previous routes are removed
+                                  (route) => false,
                                 );
                               },
                               style: ElevatedButton.styleFrom(
