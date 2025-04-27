@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
 class PaymentListItem extends StatelessWidget {
-  final String date;
-  final String name;
+  final String pid;
 
-  const PaymentListItem({
-    super.key,
-    required this.date,
-    required this.name,
-  });
+  final String subject;
+  final String date;
+  final int amount;
+
+  const PaymentListItem(
+      {super.key,
+      required this.pid,
+      required this.amount,
+      required this.date,
+      required this.subject});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,27 @@ class PaymentListItem extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex:2,
+            flex: 2,
+            child: Text(
+              pid,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              subject,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
             child: Text(
               date,
               style: const TextStyle(
@@ -29,7 +53,7 @@ class PaymentListItem extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              name,
+              amount.toString(),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,

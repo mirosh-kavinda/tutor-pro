@@ -25,14 +25,14 @@ class LoginScreenDashboard extends StatelessWidget {
         children: [
           // Top illustration
           Positioned(
-            top: 60,
+            top: 30,
             left: 0,
             right: 0,
             child: Column(
               children: [
                 Image.asset(
                   'assets/images/login_page_header.png',
-                  height: 250,
+                
                   fit: BoxFit.contain,
                 ),
               ],
@@ -53,7 +53,7 @@ class LoginScreenDashboard extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.6,
               width: double.infinity,
               decoration: const BoxDecoration(
                 image: DecorationImage(

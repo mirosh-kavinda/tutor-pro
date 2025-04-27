@@ -5,21 +5,47 @@ import 'package:printing/printing.dart';
 
 class DownloadAttendanceDialog extends StatelessWidget {
   final List<dynamic> data;
+  final String documentType;
 
-  const DownloadAttendanceDialog({super.key, required this.data});
+  const DownloadAttendanceDialog(
+      {super.key, required this.data, required this.documentType});
 
   Future<void> generateAndDownloadAttendancePDF() async {
     final pdf = pw.Document();
+    List headers = [];
+    List<List<dynamic>> dataRows = [];
+    if (documentType == "attendance") {
+      headers = ['Date', 'Class ID', 'Subject', 'Attend'];
 
-    final headers = ['Date', 'Class ID', 'Status'];
+      dataRows = data.map((record) {
+        return [
+          record['date'] ?? '',
+          record['class_id'] ?? '',
+          record['subject'] ?? '',
+          record['status'] ?? ""
+        ];
+      }).toList();
+    } else if (documentType == "payment") {
+      headers = ['Date', 'Payment ID', 'Subject', 'Amount'];
 
-    final dataRows = data.map((record) {
-      return [
-        record['date'] ?? '',
-        record['class_id'] ?? '',
-        record['status'] ?? '',
-      ];
-    }).toList();
+      dataRows = data.map((record) {
+        return [
+          record['date'] ?? 'Unknown data',
+          record['payment_id'] ?? 'Unknown data',
+          record['subject'] ?? 'Unknown data',
+          double.tryParse(record['payment']?.toString() ?? '0')?.toInt() ?? 0,
+        ];
+      }).toList();
+    }else if (documentType=="studentlist"){
+       headers = ['S No ', 'Full Name'];
+
+       dataRows = data.map((record) {
+        return [
+          record['student_id'] ?? 'Unknown data',
+          record['student_name'] ?? 'Unknown data',
+         ];
+      }).toList();
+    }
 
     pdf.addPage(
       pw.MultiPage(
@@ -28,7 +54,9 @@ class DownloadAttendanceDialog extends StatelessWidget {
           return [
             pw.Center(
               child: pw.Text(
-                'Attendance Report',
+                documentType == "attendance"
+                    ? 'Attendance Report'
+                    : documentType == "studentlist" ?"Class Student List":"Payment Report",
                 style: pw.TextStyle(
                   fontSize: 24,
                   fontWeight: pw.FontWeight.bold,
@@ -65,8 +93,14 @@ class DownloadAttendanceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Download Attendance PDF'),
-      content: const Text('Do you want to generate and download the attendance report?'),
+      title: Text(
+        documentType == "attendance"
+            ? 'Download Attendance Document'
+            : documentType == "studentlist"?"Download StudentList Document":"Download Payments Document",
+        textAlign: TextAlign.center,
+      ),
+      content: Text(
+          'Do you want to generate and download the $documentType report?'),
       actions: [
         TextButton(
           onPressed: () {

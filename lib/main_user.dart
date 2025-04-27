@@ -19,19 +19,18 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TutorPro',
       theme: ThemeData(),
-      home:LoginScreenDashboard(),
-      // home: StreamBuilder<User?>(
-      //   stream: FirebaseAuth.instance.authStateChanges(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(child: CircularProgressIndicator());
-      //     } else if (snapshot.hasData) {
-      //       return const OnboardingScreen(); // Replace with your main app screen
-      //     } else {
-      //       return const LoginScreenDashboard(); // Replace with your authentication screen
-      //     }
-      //   },
-      // ),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData) {
+            return const OnboardingScreen(); // Replace with your main app screen
+          } else {
+            return const LoginScreenDashboard(); // Replace with your authentication screen
+          }
+        },
+      ),
     );
   }
 }

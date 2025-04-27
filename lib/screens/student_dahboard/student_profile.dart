@@ -36,9 +36,6 @@ class StudentProfileCard extends StatelessWidget {
               child: Text('No student data found.'),
             );
           }
-
-          final user = FirebaseAuth.instance.currentUser;
-
           return Stack(
             children: [
               Positioned(
@@ -115,13 +112,15 @@ class StudentProfileCard extends StatelessWidget {
                             const SizedBox(height: 10),
                             _buildDetailText('Class: ${studentData['class'] ?? 'N/A'}'),
                             const SizedBox(height: 10),
-                            _buildDetailText('Subjects: ${studentData['subjects'][0] ?? 'N/A'}'),
-                       
-                            const SizedBox(height: 10),
+                        
                             _buildDetailText('Guardian’s Name: ${studentData['guardian_name'] ?? 'N/A'}'),
                             const SizedBox(height: 10),
                             _buildDetailText('Guardian’s Phone No: ${studentData['guardian_phone'] ?? 'N/A'}'),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
+                             _buildDetailText('Subjects: ${studentData['subjects'].take(2).join(', ')}${studentData['subjects'].length > 2 ? '...' : ''}',),
+                             
+ 
+                            const SizedBox(height: 30),
                             Center(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -176,3 +175,5 @@ class StudentProfileCard extends StatelessWidget {
     );
   }
 }
+
+

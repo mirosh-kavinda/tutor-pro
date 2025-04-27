@@ -64,7 +64,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
     if (mappedData.isNotEmpty){
   showDialog(
       context: context,
-      builder: (context) => DownloadAttendanceDialog(data: mappedData),
+      builder: (context) => DownloadAttendanceDialog(data: mappedData,documentType: "attendance",),
     );
     }
   
@@ -177,46 +177,63 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 40),
 
                         // Header Row
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth <= 640 ? 15 : 20),
-                          child: const Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Date',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                        const Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Date',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Class Id',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                            ),
+                             Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Class ID',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                'Subject',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            
+                             Expanded(
+                              flex: 1,
+                              child: Text(
+                                'Attend',
+                                style: TextStyle(
+                                
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
-                        SizedBox(
-                          width: screenWidth * 2 / 3,
-                          child: const Divider(
-                            color: Colors.grey,
-                            thickness: 1,
-                          ),
+                        const Divider(
+                          color: Colors.grey,
+                          thickness: 1,
                         ),
 
                         // Attendance List
@@ -250,19 +267,21 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                                         child: Text(
                                           'No records found.',
                                           style: TextStyle(
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       )
                                     : ListView.builder(
+                                        padding:EdgeInsets.only(top: 10),
                                         itemCount: attendanceData!.length,
                                         itemBuilder: (context, index) {
                                           final record = attendanceData![index];
                                           return AttendanceListItem(
                                             date: record['date'] ?? '',
-                                            name: record['class_id'] ?? '',
+                                            classId: record['class_id'] ?? '',
+                                            name: record['subject'] ?? '',
                                             isPresent: record['status'],
                                           );
                                         },

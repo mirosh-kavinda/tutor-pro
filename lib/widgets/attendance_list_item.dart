@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class AttendanceListItem extends StatelessWidget {
   final String date;
   final String name;
+  final String classId;
   final bool isPresent;
 
   const AttendanceListItem({
     Key? key,
     required this.date,
     required this.name,
+    required this.classId,
     required this.isPresent,
   }) : super(key: key);
 
@@ -29,8 +31,18 @@ class AttendanceListItem extends StatelessWidget {
               ),
             ),
           ),
+           Expanded(
+            flex: 2,
+            child: Text(
+              classId,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Text(
               name,
               style: const TextStyle(

@@ -18,7 +18,7 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
   DateTime? toDate;
   List<Map<String, dynamic>>? paymentData;
   List<Map<String, dynamic>>? originalPaymentData;
-  bool isNoRecordFound=true;
+  bool isNoRecordFound = true;
 
   void _selectDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
@@ -43,7 +43,7 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
     if (originalPaymentData == null) return;
 
     final filteredData = originalPaymentData!.where((record) {
-      final recordDate = DateTime.parse(record['payDate']);
+      final recordDate = DateTime.parse(record['date']);
       return (recordDate.isAtSameMomentAs(from) || recordDate.isAfter(from)) &&
           (recordDate.isAtSameMomentAs(to) || recordDate.isBefore(to));
     }).toList();
@@ -60,14 +60,15 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
       paymentData = originalPaymentData;
     });
   }
-   void _downloadPDF(context, List<dynamic> mappedData) {
-    if (mappedData.isNotEmpty){
-  showDialog(
-      context: context,
-      builder: (context) => DownloadAttendanceDialog(data: mappedData),
-    );
+
+  void _downloadPDF(context, List<dynamic> mappedData) {
+    if (mappedData.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) =>
+            DownloadAttendanceDialog(data: mappedData, documentType: "payment"),
+      );
     }
-  
   }
 
   @override
@@ -127,10 +128,10 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomAppBar(
-                          title: "Payment History",
-                          onDownloadPressed: () =>
+                            title: "Payment History",
+                            onDownloadPressed: () =>
                                 _downloadPDF(context, paymentData ?? [])),
-                        
+
                         const SizedBox(height: 10),
 
                         // Date Range Selector
@@ -177,7 +178,7 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
                           ),
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 30),
 
                         // Header Row
 
@@ -190,6 +191,28 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
+                                  'Id',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  'subject',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Text(
                                   'Date',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -201,7 +224,7 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  'class Id',
+                                  'Amount',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -212,14 +235,13 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          width: screenWidth * 2 / 3,
-                          child: const Divider(
-                            color: Colors.grey,
-                            thickness: 1,
-                            height: 20,
-                          ),
+
+                        const Divider(
+                          color: Colors.grey,
+                          thickness: 1,
+                          height: 20,
                         ),
+
                         // Payment List with FutureBuilder
                         Expanded(
                           child: FutureBuilder<List<Map<String, dynamic>>>(
@@ -247,20 +269,39 @@ class _StudentPaymentSheetState extends State<StudentPaymentSheet> {
 
                               // Store original payment list once
                               if (originalPaymentData == null) {
-                                isNoRecordFound=false;
+                                isNoRecordFound = false;
                                 originalPaymentData = snapshot.data!;
                                 paymentData ??= snapshot.data!;
                               }
 
-                              return  ListView.builder(
+                              return paymentData == null || paymentData!.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'No records found.',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: EdgeInsets.only(top: 10),
                                       itemCount: paymentData!.length,
                                       itemBuilder: (context, index) {
                                         final item = paymentData![index];
                                         return PaymentListItem(
-                                          date:
-                                              item['payDate'] ?? 'Unknown Date',
-                                          name: item['class_id'] ??
-                                              'Unknown Name',
+                                          date: item['date'] ?? 'Unknown data',
+                                          pid: item['payment_id'] ??
+                                              'Unknown data',
+                                          subject:
+                                              item['subject'] ?? 'Unknown data',
+                                          amount: double.tryParse(
+                                                      item['payment']
+                                                              ?.toString() ??
+                                                          '0')
+                                                  ?.toInt() ??
+                                              0,
                                         );
                                       },
                                     );

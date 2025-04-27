@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tutorpro/screens/login/login_admin.dart';
-import 'package:tutorpro/screens/login/login_dashboard.dart';
+import 'screens/login/login_input_view.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 
 void main() async {
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
           } else if (snapshot.hasData) {
             return const OnboardingScreen(); // Replace with your main app screen
           } else {
-            return  AdminLoginView(); 
+            return  const LoginInputView(typeId: "admin"); 
           }
         },
       ),

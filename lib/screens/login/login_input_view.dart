@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../repository/handleAuthLogin.dart';
 import '../../widgets/custom_text_field.dart';
-import '../student_dahboard/student_profile.dart';
-import '../teacher_dashboard/teacher_profile.dart';
 
 class LoginInputView extends StatefulWidget {
   final String typeId;
@@ -35,8 +32,10 @@ class _LoginInputViewState extends State<LoginInputView> {
 
   void _validateInputs() {
     setState(() {
-      _isButtonEnabled = _usernameController.text.isNotEmpty &&
-          _passwordController.text.isNotEmpty;
+      _isButtonEnabled = (widget.typeId != "admin" &&
+              _usernameController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty) ||
+          widget.typeId == "admin" && _passwordController.text.isNotEmpty;
     });
   }
 
@@ -46,7 +45,8 @@ class _LoginInputViewState extends State<LoginInputView> {
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          Positioned.fill(
+          Positioned(
+            top: 40,
             child: Image.asset(
               'assets/images/login_page_header.png',
               fit: BoxFit.cover,
@@ -77,14 +77,12 @@ class _LoginInputViewState extends State<LoginInputView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.typeId == 'teacher'
-                        ? "Welcome Back Teacher "
-                        : "Welcome Back Student",
+                  const Text(
+                    " WELCOME BACK TO NENEKRA EDUCATION INSTITUTE",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontSize: 20,
+                      fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -101,13 +99,15 @@ class _LoginInputViewState extends State<LoginInputView> {
                     ),
                     child: Column(
                       children: [
-                        CustomTextField(
-                          controller: _usernameController,
-                          label: 'Username',
-                          prefixIcon: Icons.person,
-                        ),
+                        if (widget.typeId != "admin")
+                          CustomTextField(
+                            controller: _usernameController,
+                            label: 'Username',
+                            prefixIcon: Icons.person,
+                          ),
                         const SizedBox(height: 20),
                         CustomTextField(
+                          isPassword: true,
                           controller: _passwordController,
                           label: 'Password',
                           prefixIcon: Icons.lock,
