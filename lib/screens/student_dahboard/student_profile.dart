@@ -2,30 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorpro/screens/onboarding/onboarding_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../repository/handleAuthLogin.dart';
+import '../../repository/student_repository.dart';
 import 'students_attendance.dart';
 
 class StudentProfileCard extends StatelessWidget {
   const StudentProfileCard({super.key});
 
-  Future<Map<String, dynamic>?> getStudentData() async {
-    final userEmail = FirebaseAuth.instance.currentUser?.email;
 
-    if (userEmail == null) {
-      return null;
-    }
-
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('students')
-        .where('email', isEqualTo: userEmail)
-        .limit(1)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      return querySnapshot.docs.first.data();
-    } else {
-      return null;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,19 +60,7 @@ class StudentProfileCard extends StatelessWidget {
                     color: Colors.black,
                     size: 30,
                   ),
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut().then((value) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OnboardingScreen(),
-                        ),
-                        (route) => false,
-                      );
-                    }).catchError((error) {
-                      // Handle sign-out error
-                    });
-                  },
+                  onPressed:()=>AuthSignout(context),
                 ),
               ),
               Align(
@@ -143,7 +115,8 @@ class StudentProfileCard extends StatelessWidget {
                             const SizedBox(height: 10),
                             _buildDetailText('Class: ${studentData['class'] ?? 'N/A'}'),
                             const SizedBox(height: 10),
-                            _buildDetailText('Subjects: ${studentData['subjects'] ?? 'N/A'}'),
+                            _buildDetailText('Subjects: ${studentData['subjects'][0] ?? 'N/A'}'),
+                       
                             const SizedBox(height: 10),
                             _buildDetailText('Guardian’s Name: ${studentData['guardian_name'] ?? 'N/A'}'),
                             const SizedBox(height: 10),
@@ -155,7 +128,7 @@ class StudentProfileCard extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const AttendanceSheetScreen(),
+                                      builder: (context) => AttendanceSheetScreen(studentID: studentData['student_id'],),
                                     ),
                                   );
                                 },

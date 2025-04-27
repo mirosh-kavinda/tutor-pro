@@ -1,10 +1,74 @@
 import 'package:flutter/material.dart';
+import '../../repository/student_repository.dart';
 import '../../widgets/attendance_list_item.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/download_pdf.dart';
 import 'student_payments.dart';
 
-class AttendanceSheetScreen extends StatelessWidget {
-  const AttendanceSheetScreen({super.key});
+class AttendanceSheetScreen extends StatefulWidget {
+  final String studentID;
+  const AttendanceSheetScreen({super.key, required this.studentID});
+
+  @override
+  _AttendanceSheetScreenState createState() => _AttendanceSheetScreenState();
+}
+
+class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
+  DateTime? fromDate;
+  DateTime? toDate;
+  List<dynamic>? attendanceData;
+  List<dynamic>? originalAttendanceData;
+
+  void _selectDateRange(BuildContext context) async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: fromDate != null && toDate != null
+          ? DateTimeRange(start: fromDate!, end: toDate!)
+          : null,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        fromDate = picked.start;
+        toDate = picked.end;
+        _filterAttendanceByDateRange(fromDate!, toDate!);
+      });
+    }
+  }
+
+  void _filterAttendanceByDateRange(DateTime from, DateTime to) {
+    if (originalAttendanceData == null) return;
+
+    final filteredData = originalAttendanceData!.where((record) {
+      final recordDate = DateTime.parse(record['date']);
+      return (recordDate.isAtSameMomentAs(from) || recordDate.isAfter(from)) &&
+          (recordDate.isAtSameMomentAs(to) || recordDate.isBefore(to));
+    }).toList();
+
+    setState(() {
+      attendanceData = filteredData;
+    });
+  }
+
+  void _clearDateFilter() {
+    setState(() {
+      fromDate = null;
+      toDate = null;
+      attendanceData = originalAttendanceData;
+    });
+  }
+
+  void _downloadPDF(context, List<dynamic> mappedData) {
+    if (mappedData.isNotEmpty){
+  showDialog(
+      context: context,
+      builder: (context) => DownloadAttendanceDialog(data: mappedData),
+    );
+    }
+  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +107,7 @@ class AttendanceSheetScreen extends StatelessWidget {
                     },
                   ),
                 ),
+
                 // Main Content Container
                 Positioned(
                   top: screenWidth <= 640 ? 200 : 276,
@@ -54,55 +119,76 @@ class AttendanceSheetScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(
-                            'assets/images/home_student_gradient.png'),
+                          'assets/images/home_student_gradient.png',
+                        ),
                         fit: BoxFit.cover,
                       ),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomAppBar(title: "Attendance Sheet",),
-                        // Date Section
-                        Container(
-                          color: Colors.white,
-                          width: screenWidth * 2 / 3,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth <= 640 ? 15 : 20,
-                            vertical: screenWidth <= 640 ? 15 : 20,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Date :',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                        CustomAppBar(
+                            title: "Attendance Sheet",
+                            onDownloadPressed: () =>
+                                _downloadPDF(context, attendanceData ?? [])),
+                        const SizedBox(height: 10),
+
+                        // Date Range Selector
+                        GestureDetector(
+                          onTap: () => _selectDateRange(context),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    fromDate != null && toDate != null
+                                        ? 'From: ${fromDate!.toLocal().toString().split(' ')[0]} To: ${toDate!.toLocal().toString().split(' ')[0]}'
+                                        : 'Select Date Range',
+                                    style: TextStyle(
+                                      fontFamily: 'Popins',
+                                      color: Colors.grey[800],
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Image.network(
-                                'https://cdn.builder.io/api/v1/image/assets/TEMP/ab740c0f7069c364ea2d25e2c7e3e09a38bf7bdc?placeholderIfAbsent=true',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ],
+                                const Icon(
+                                  Icons.calendar_month,
+                                  size: 25,
+                                  color: Colors.black,
+                                ),
+                                if (fromDate != null && toDate != null)
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: _clearDateFilter,
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
+
+                        const SizedBox(height: 10),
+
                         // Header Row
-                        const SizedBox(
-                          height: 20,
-                        ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth <= 640 ? 15 : 20),
                           child: const Row(
                             children: [
-                                Expanded(
+                              Expanded(
                                 flex: 2,
                                 child: Text(
-                                  'S.No',
+                                  'Date',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -111,9 +197,9 @@ class AttendanceSheetScreen extends StatelessWidget {
                                 ),
                               ),
                               Expanded(
-                                flex:4,
+                                flex: 2,
                                 child: Text(
-                                  'Name',
+                                  'Class Id',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 14,
@@ -124,83 +210,95 @@ class AttendanceSheetScreen extends StatelessWidget {
                             ],
                           ),
                         ),
+
                         SizedBox(
                           width: screenWidth * 2 / 3,
                           child: const Divider(
                             color: Colors.grey,
                             thickness: 1,
-                           
                           ),
                         ),
+
                         // Attendance List
                         Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth <= 640 ? 15 : 20,
-                            ),
-                            child: ListView(
-                              children: const [
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: false,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                                AttendanceListItem(
-                                  date: '01/01/25',
-                                  name: 'Lorem spein',
-                                  isPresent: true,
-                                ),
-                              ],
-                            ),
+                          child: FutureBuilder<List<Map<String, dynamic>>>(
+                            future: fetchAttendanceData(
+                                studentId: widget.studentID),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child:
+                                        Text('No attendance records found.'));
+                              } else {
+                                // Store original attendance list once
+                                if (originalAttendanceData == null) {
+                                  originalAttendanceData = snapshot.data!;
+                                  attendanceData ??= snapshot.data!;
+                                }
+
+                                return attendanceData == null ||
+                                        attendanceData!.isEmpty
+                                    ? const Center(
+                                        child: Text(
+                                          'No records found.',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: attendanceData!.length,
+                                        itemBuilder: (context, index) {
+                                          final record = attendanceData![index];
+                                          return AttendanceListItem(
+                                            date: record['date'] ?? '',
+                                            name: record['class_id'] ?? '',
+                                            isPresent: record['status'],
+                                          );
+                                        },
+                                      );
+                              }
+                            },
                           ),
                         ),
-                        // View Payments Button
-                        Padding(
-                          padding: EdgeInsets.all(screenWidth <= 640 ? 15 : 20),
-                          child: Align(
-                            alignment: screenWidth <= 640
-                                ? Alignment.center
-                                : Alignment.centerRight,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const StudentPaymentSheet()),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 14),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          alignment: Alignment.center,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StudentPaymentSheet(
+                                      studentId: widget.studentID),
                                 ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Text(
-                                'VIEW PAYMENTS',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            child: const Text(
+                              'View Payments',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

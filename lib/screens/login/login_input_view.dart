@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../repository/handleAuthLogin.dart';
 import '../../widgets/custom_text_field.dart';
 import '../student_dahboard/student_profile.dart';
 import '../teacher_dashboard/teacher_profile.dart';
@@ -37,38 +38,6 @@ class _LoginInputViewState extends State<LoginInputView> {
       _isButtonEnabled = _usernameController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty;
     });
-  }
-
-  void userAuth(BuildContext context) async {
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _usernameController.text,
-        password: _passwordController.text,
-      );
-      debugPrint(credential.user?.toString());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => widget.typeId == "student"
-              ? const StudentProfileCard()
-              : const TeacherProfileCard(),
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      final message = e.message ?? 'An error occurred. Please try again.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            message,
-            style: const TextStyle(
-                fontSize: 14,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.red[400],
-        ),
-      );
-    }
   }
 
   @override
@@ -148,7 +117,11 @@ class _LoginInputViewState extends State<LoginInputView> {
                           width: 270,
                           child: ElevatedButton(
                             onPressed: _isButtonEnabled
-                                ? () => userAuth(context)
+                                ? () => userAuth(
+                                    context,
+                                    widget.typeId,
+                                    _usernameController.text,
+                                    _passwordController.text)
                                 : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),

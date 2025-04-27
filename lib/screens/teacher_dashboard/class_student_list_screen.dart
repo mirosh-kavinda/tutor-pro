@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/download_pdf.dart';
 import '../../widgets/payment_list_item.dart';
 import '../student_dahboard/student_payments.dart';
 import 'class_student_attendance_screen.dart';
@@ -8,6 +9,8 @@ import 'class_student_attendance_screen.dart';
 class ClassStudentListScreen extends StatelessWidget {
   final int classId;
   const ClassStudentListScreen({super.key,required this.classId});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +67,9 @@ class ClassStudentListScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CustomAppBar(title: "Student List",),
+                        CustomAppBar(title: "Student List", onDownloadPressed: () {},
+                        
+                        ),
                        
                         // Header Row
                         const SizedBox(
