@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../screens/admin_dashboard/AdminScreen.dart';
+
 
 class AdminLoginView extends StatelessWidget {
 
@@ -83,15 +85,15 @@ class AdminLoginView extends StatelessWidget {
                         SizedBox(
                           width: 270,
                           child: ElevatedButton(
-                            onPressed: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => typeId == "student"
-                              //           ? const StudentProfileCard()
-                              //           : const TeacherProfileCard()),
-                              // );
-                            },
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AdminScreen(),
+                                  ),
+                                );
+                              },
+
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF06759F),
                               padding: const EdgeInsets.symmetric(vertical: 15),

@@ -4,9 +4,11 @@ version: 1.0.0+1
 environment:
   sdk: ^3.5.4
 dependencies:
+   
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_flavorizr: ^2.0.0
