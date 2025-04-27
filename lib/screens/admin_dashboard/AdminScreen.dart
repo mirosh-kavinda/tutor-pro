@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tutorpro/screens/admin_dashboard/payement/payement1.dart';
 import 'package:tutorpro/screens/admin_dashboard/shedule/shedulescreen.dart';
 import '../onboarding/onboarding_screen.dart';
-import '../../screens/admin_dashboard/teacher_list.dart';
-import '../../screens/admin_dashboard/AdminStudent.dart';
+import 'admin_teacher/teacher_list.dart';
+import 'admin_student/AdminStudent.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({Key? key}) : super(key: key);
@@ -13,9 +13,7 @@ class AdminScreen extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const TeacherListScreen(
-            classId: 1,
-          ),
+          builder: (context) =>  TeacherListScreen(),
         ),
       );
     } else if (label == 'Student') {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'AG6MStudentList.dart';
+import 'admin_student/AG6MStudentList.dart';
 
 class Adminviewattendence extends StatefulWidget {
   const Adminviewattendence({super.key});
@@ -89,7 +88,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                       onPressed: () {
                     Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Ag6mstudentlist(classId: 1,)),
+                    MaterialPageRoute(builder: (context) => const Ag6mstudentlist(students: [],subjectId:"",classId: "",)),
                   );
                       },
                       style: ElevatedButton.styleFrom(
@@ -121,7 +120,8 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Date: ${DateFormat('dd-MMM-yyyy').format(selectedDate)}',
+                            // 'Date: ${DateFormat('dd-MMM-yyyy').format(selectedDate)}',"",
+                            "",
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,

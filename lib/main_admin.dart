@@ -21,18 +21,20 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appTitle,
       theme: ThemeData(),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData) {
-            return const OnboardingScreen(); // Replace with your main app screen
-          } else {
-            return  const LoginInputView(typeId: "admin"); 
-          }
-        },
-      ),
+      home: LoginInputView(typeId: "admin")
+      
+      // StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return const Center(child: CircularProgressIndicator());
+      //     } else if (snapshot.hasData) {
+      //       return const OnboardingScreen(); 
+      //     } else {
+      //       return  const LoginInputView(typeId: "admin"); 
+      //     }
+      //   },
+      // ),
     );
   }
 }

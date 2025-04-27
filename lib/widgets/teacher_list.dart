@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 class TeacherListItem extends StatelessWidget {
   final String date;
   final String name;
-  final String grade;
   final String className;
 
   const TeacherListItem({
     super.key,
     required this.date,
     required this.name,
-    required this.grade,
     required this.className,
   });
 
@@ -41,14 +39,7 @@ class TeacherListItem extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              grade,
-              style: const TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-          ),
+          
           Expanded(
             flex: 3,
             child: Text(

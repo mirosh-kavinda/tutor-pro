@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/admin_dashboard/AddStudent.dart';
-import 'package:tutorpro/screens/admin_dashboard/AddTeacher.dart';
+import 'package:tutorpro/screens/admin_dashboard/admin_teacher/AddTeacher.dart';
 import 'package:tutorpro/widgets/teacher_list.dart';
 
-class TeacherListScreen extends StatelessWidget {
-  final int classId;
-  const TeacherListScreen({super.key, required this.classId});
+import '../../../repository/admin_repository.dart';
 
+class TeacherListScreen extends StatelessWidget {
+  TeacherListScreen({super.key});
+  List<dynamic>? teachersData;
+  List<dynamic>? originalTeachersData;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +67,7 @@ class TeacherListScreen extends StatelessWidget {
                           crossAxisAlignment:
                               CrossAxisAlignment.start, // Align text to start
                           children: [
-                            Text(
+                            const Text(
                               "Teacher List",
                               style: TextStyle(
                                 color: Colors.white,
@@ -74,7 +75,8 @@ class TeacherListScreen extends StatelessWidget {
                               ),
                               textAlign: TextAlign.start,
                             ),
-                            SizedBox(height: 4), // space between text and line
+                            const SizedBox(
+                                height: 4), // space between text and line
                             Container(
                               height: 2, // thickness of the line
                               width:
@@ -90,10 +92,10 @@ class TeacherListScreen extends StatelessWidget {
                       // Table header
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
+                            horizontal: 14, vertical: 10),
                         color: Colors.black.withOpacity(0.3),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Expanded(
                               flex: 2,
                               child: Text(
@@ -115,19 +117,9 @@ class TeacherListScreen extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              flex: 2,
+                              flex: 4,
                               child: Text(
-                                'Grade',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                'Class',
+                                'Classes',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
@@ -140,37 +132,59 @@ class TeacherListScreen extends StatelessWidget {
 
                       const Divider(color: Colors.grey, thickness: 1),
 
-                      // List items
                       Expanded(
-                        child: ListView(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          children: const [
-                            TeacherListItem(
-                                date: '0001',
-                                name: 'Alice Johnson',
-                                grade: 'G.6',
-                                className: 'Maths'),
-                            TeacherListItem(
-                                date: '0002',
-                                name: 'Bob Smith',
-                                grade: 'G.7',
-                                className: 'Science'),
-                            TeacherListItem(
-                                date: '0003',
-                                name: 'Charlie Brown',
-                                grade: 'G.8',
-                                className: 'History'),
-                            TeacherListItem(
-                                date: '0004',
-                                name: 'David Lee',
-                                grade: 'G.9',
-                                className: 'English'),
-                            TeacherListItem(
-                                date: '0005',
-                                name: 'Ella Green',
-                                grade: 'G.5',
-                                className: 'Physics'),
-                          ],
+                        child: FutureBuilder<List<Map<String, dynamic>>>(
+                          future: fetchTeachersData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Center(
+                                  child: Text('No attendance records found.'));
+                            } else {
+                              // Store original attendance list once
+                              if (originalTeachersData == null) {
+                                originalTeachersData = snapshot.data!;
+                                teachersData ??= snapshot.data!;
+                              }
+
+                              return teachersData == null ||
+                                      teachersData!.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'No records found.',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: EdgeInsets.only(top: 10),
+                                      itemCount: teachersData!.length,
+                                      itemBuilder: (context, index) {
+                                        final record = teachersData![index];
+                                        return TeacherListItem(
+                                          date: record['teacher_id'] ??
+                                              "Unknown Data",
+                                          name: record['teacher_name'] ??
+                                              "Unknown Data",
+                                          className: record['classes']
+                                              .map((classItem) =>
+                                                  classItem['class_name']
+                                                      .toString())
+                                              .join(', '),
+                                        );
+                                      });
+                            }
+                          },
                         ),
                       ),
 

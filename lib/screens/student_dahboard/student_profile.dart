@@ -1,15 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/onboarding/onboarding_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../repository/handleAuthLogin.dart';
 import '../../repository/student_repository.dart';
 import 'students_attendance.dart';
 
 class StudentProfileCard extends StatelessWidget {
   const StudentProfileCard({super.key});
-
-
 
   @override
   Widget build(BuildContext context) {

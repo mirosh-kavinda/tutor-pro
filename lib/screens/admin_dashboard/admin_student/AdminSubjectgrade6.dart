@@ -1,46 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/admin_dashboard/AG6MStudentList.dart';
-import '../onboarding/onboarding_screen.dart';
+import 'package:tutorpro/screens/admin_dashboard/admin_student/AG6MStudentList.dart';
+import '../../onboarding/onboarding_screen.dart';
 
 class AdminSubjectgrade6 extends StatelessWidget {
-  const AdminSubjectgrade6({super.key});
+  final List<dynamic> subjects;
+   final String classId;
+  const AdminSubjectgrade6({super.key , required this.subjects, required this.classId});
 
-  void _onClassTap(BuildContext context, String className) {
-    Widget targetScreen;
-
-    switch (className.trim()) {
-      case 'Mathematics':
-        targetScreen = const Ag6mstudentlist(classId: 1);
-        break;
-      case 'Science':
-        targetScreen = const Ag6mstudentlist(classId: 2);
-        break;
-      case 'English':
-        targetScreen = const Ag6mstudentlist(classId: 3);
-        break;
-      case 'Sinhala':
-        targetScreen = const Ag6mstudentlist(classId: 4);
-        break;
-      // Add more cases for other subjects if necessary
-      default:
-        targetScreen = const OnboardingScreen(); // fallback if class not found
-    }
+  void _onClassTap(BuildContext context, List<dynamic> students,String subjectId) {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => targetScreen),
+      MaterialPageRoute(builder: (context) => Ag6mstudentlist(students:students,subjectId:subjectId,classId: classId,)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> classes = [
-      {'label': 'Mathematics', 'image': 'assets/images/student_class.png'},
-      {'label': 'Science', 'image': 'assets/images/student_class.png'},
-      {'label': 'English', 'image': 'assets/images/student_class.png'},
-      {'label': 'Sinhala', 'image': 'assets/images/student_class.png'},
-    ];
-
+   
     return Scaffold(
       body: Stack(
         children: [
@@ -106,7 +83,8 @@ class AdminSubjectgrade6 extends StatelessWidget {
                   ),
                   Expanded(
                     child: GridView.builder(
-                      itemCount: classes.length,
+                      itemCount:    
+subjects.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 20,
@@ -114,9 +92,9 @@ class AdminSubjectgrade6 extends StatelessWidget {
                         childAspectRatio: 3 / 4,
                       ),
                       itemBuilder: (context, index) {
-                        final item = classes[index];
+                        final item = subjects[index];
                         return InkWell(
-                          onTap: () => _onClassTap(context, item['label']!),
+                          onTap: () => _onClassTap(context, item['students']!,item['subject_id']),
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             decoration: BoxDecoration(
@@ -134,7 +112,7 @@ class AdminSubjectgrade6 extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  item['image']!,
+                                  'assets/images/student_class.png',
                                   height: 120, // Adjust image size
                                   width: 120, // Adjust image size
                                   fit: BoxFit.cover,
@@ -143,7 +121,7 @@ class AdminSubjectgrade6 extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Text(
-                                    item['label']!,
+                                    item['subject_name']!,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 18,

@@ -1,19 +1,27 @@
   import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<Map<String, dynamic>?> getStudentData() async {
+Future<Map<String, dynamic>?> getStudentData({String? studentId}) async {
     final userEmail = FirebaseAuth.instance.currentUser?.email;
-
+final querySnapshot;
     if (userEmail == null) {
       return null;
     }
-
-    final querySnapshot = await FirebaseFirestore.instance
+    if(studentId!=null){
+   
+     querySnapshot  = await FirebaseFirestore.instance
+        .collection('students')
+        .where('student_id', isEqualTo: studentId)
+        .limit(1)
+        .get();
+    }else{
+      
+   querySnapshot = await FirebaseFirestore.instance
         .collection('students')
         .where('email', isEqualTo: userEmail)
         .limit(1)
         .get();
-
+    }
     if (querySnapshot.docs.isNotEmpty) {
       return querySnapshot.docs.first.data();
     } else {

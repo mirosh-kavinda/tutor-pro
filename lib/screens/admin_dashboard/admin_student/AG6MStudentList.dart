@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/admin_dashboard/AddStudent.dart';
-import 'package:tutorpro/screens/admin_dashboard/adminstudentprofile.dart';
+import 'package:tutorpro/screens/admin_dashboard/admin_student/AddStudent.dart';
+import 'package:tutorpro/screens/admin_dashboard/admin_student/adminstudentprofile.dart';
 import 'package:tutorpro/screens/admin_dashboard/adminviewattendence.dart';
 
 class Ag6mstudentlist extends StatelessWidget {
-  final int classId;
-  const Ag6mstudentlist({super.key, required this.classId});
+  final List<dynamic> students;
+  final String subjectId;
+   final String classId;
+  const Ag6mstudentlist({super.key, required this.students, required this.subjectId, required this.classId});
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +97,15 @@ class Ag6mstudentlist extends StatelessWidget {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const Adminviewattendence()),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const Adminviewattendence()),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -123,7 +128,8 @@ class Ag6mstudentlist extends StatelessWidget {
 
                       // Table Header
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                         color: Colors.black.withOpacity(0.3),
                         child: Row(
                           children: const [
@@ -163,15 +169,14 @@ class Ag6mstudentlist extends StatelessWidget {
 
                       // Table Rows
                       Expanded(
-                        child: ListView(
+                        child: ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          children: [
-                            studentRow(context, '0001', 'Alice Johnson'),
-                            studentRow(context, '0002', 'Bob Smith'),
-                            studentRow(context, '0003', 'Charlie Brown'),
-                            studentRow(context, '0004', 'David Lee'),
-                            studentRow(context, '0005', 'Ella Green'),
-                          ],
+                          itemCount: students.length,
+                          itemBuilder: (context, index) {
+                            final student = students[index];
+                            return studentRow(context, student['student_id'],
+                                student['student_name']);
+                          },
                         ),
                       ),
 
@@ -182,12 +187,14 @@ class Ag6mstudentlist extends StatelessWidget {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const AddStudent()),
+                              MaterialPageRoute(
+                                  builder: (context) =>  AddStudent(subjectId: subjectId,classId:classId ,)),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -249,13 +256,17 @@ class Ag6mstudentlist extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Adminstudentprofile()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Adminstudentprofile(
+                          studetnId: sno,
+                        ),
+                      ));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

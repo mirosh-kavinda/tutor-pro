@@ -17,6 +17,7 @@ Future<void> AuthSignout(BuildContext context) async {
       (route) => false,
     );
   }).catchError((error) {
+     ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(
         error.toString(),
@@ -24,7 +25,8 @@ Future<void> AuthSignout(BuildContext context) async {
             fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.bold),
       ),
       backgroundColor: Colors.red[400],
-    );
+    )
+     );
   });
 }
 
