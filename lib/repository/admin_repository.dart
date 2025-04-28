@@ -14,6 +14,18 @@ Future<List<Map<String, dynamic>>> fetchTeachersData() async {
   }
 }
 
+
+Future<List<Map<String, dynamic>>> fetchSchedules() async {
+  final querySnapshot =
+      await FirebaseFirestore.instance.collection('schedule').get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  } else {
+    return [];
+  }
+}
+
 Future<List<Map<String, dynamic>>> fetchPayments({required String classId}) async {
   final querySnapshot =
       await FirebaseFirestore.instance.collection('payments').where('class_id',isEqualTo: classId).get();
@@ -290,6 +302,46 @@ Future<void> addStudent(Map<String, dynamic> studentData, BuildContext context,
     );
   }
 }
+
+
+
+
+Future<void> addschedule(Map<String, dynamic> schedule, BuildContext context) async {
+  try {
+    
+    await FirebaseFirestore.instance
+        .collection('schedule')
+        .add(schedule);
+
+   
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text(
+        'Schedule added successfully!',
+        style: TextStyle(
+            fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Colors.green[400],
+    ));
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'Error adding student: $e',
+        style: const TextStyle(
+            fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Colors.red[400],
+    ));
+  } finally {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AdminScreen(),
+      ),
+      (route) => false,
+    );
+  }
+}
+
 
 Future<void> updatePaymentStatus(String paymentId, bool isPaid) async {
   try {

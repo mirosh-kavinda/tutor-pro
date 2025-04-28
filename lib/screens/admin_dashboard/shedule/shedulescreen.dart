@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorpro/repository/admin_repository.dart';
 import '../../admin_dashboard/shedule/AddScheduleScreen.dart';
 
 class ScheduleScreen extends StatelessWidget {
@@ -6,15 +7,7 @@ class ScheduleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const List<Map<String, String>> schedules = [
-      {'date': 'Monday', 'time': '8:00-10:00', 'class': 'Lorem spein'},
-      {'date': 'Tuesday', 'time': '10:00-12:00', 'class': 'Lorem spein'},
-      {'date': 'Wednesday', 'time': '1:00-3:00', 'class': 'Lorem spein'},
-      {'date': 'Thursday', 'time': '2:00-4:00', 'class': 'Lorem spein'},
-      {'date': 'Friday', 'time': '9:00-11:00', 'class': 'Lorem spein'},
-      {'date': 'Saturday', 'time': '10:00-12:00', 'class': 'Lorem spein'},
-    ];
-
+ List<dynamic>? schedules;
     return Scaffold(
       body: Stack(
         children: [
@@ -47,7 +40,7 @@ class ScheduleScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 150), // Space for top image and back button
               Expanded(
-                child: _buildScheduleSection(context, schedules),
+                child: _buildScheduleSection(context),
               ),
             ],
           ),
@@ -57,7 +50,7 @@ class ScheduleScreen extends StatelessWidget {
   }
 
   // Widget for the schedule section
-  Widget _buildScheduleSection(BuildContext context, List<Map<String, String>> schedules) {
+  Widget _buildScheduleSection(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -117,58 +110,79 @@ class ScheduleScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: schedules.length,
-              itemBuilder: (context, index) {
-                final schedule = schedules[index];
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  margin: const EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        schedule['date']!,
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+                            future: fetchSchedules(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child:
+                                        Text('No Schedules records found.'));
+                              } 
+
+
+                              var schedules=snapshot.data;
+                return ListView.builder(
+                  itemCount: schedules?.length,
+                  itemBuilder: (context, index) {
+                    final schedule = schedules![index];
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Text(
-                        schedule['time']!,
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Row(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            schedule['class']!,
+                            schedule['date']!,
                             style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 14,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(width: 5),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                            size: 16,
+                          Text(
+                            schedule['time']!,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                schedule['class']!,
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
-              },
+              }
             ),
           ),
           const SizedBox(height: 20),
