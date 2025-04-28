@@ -32,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (mounted) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>appFlavor=="user"? const LoginScreenDashboard():LoginInputView(typeId: "admin")),
+        MaterialPageRoute(builder: (context) =>appFlavor=="user"? const LoginScreenDashboard():const LoginInputView(typeId: "admin")),
       );
     }
   }

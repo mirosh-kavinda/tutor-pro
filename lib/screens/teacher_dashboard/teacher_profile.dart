@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../repository/handleAuthLogin.dart';
 import '../../repository/teacher_repository.dart';
-import '../onboarding/onboarding_screen.dart';
 import 'class_student_list_screen.dart';
 
 class TeacherProfileCard extends StatelessWidget {

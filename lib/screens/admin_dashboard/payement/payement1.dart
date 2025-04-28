@@ -18,13 +18,6 @@ class Payement1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const List<Map<String, String>> classes = [
-      {'label': 'Grade 6', 'image': 'assets/images/student_class.png'},
-      {'label': 'Grade 7', 'image': 'assets/images/student_class.png'},
-      {'label': 'Grade 8', 'image': 'assets/images/student_class.png'},
-      {'label': 'Grade 9', 'image': 'assets/images/student_class.png'},
-    ];
-
     return Scaffold(
       body: Stack(
         children: [

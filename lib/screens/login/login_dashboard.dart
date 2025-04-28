@@ -7,14 +7,14 @@ class LoginScreenDashboard extends StatelessWidget {
   void _navigateToTeacherLogin(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginInputView(typeId: "teacher")),
+      MaterialPageRoute(builder: (context) => const LoginInputView(typeId: "teacher")),
     );
   }
 
   void _navigateToStudentLogin(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoginInputView(typeId: "student")),
+      MaterialPageRoute(builder: (context) => const LoginInputView(typeId: "student")),
     );
   }
 

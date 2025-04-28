@@ -241,7 +241,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                         Expanded(
                           child: FutureBuilder<List<Map<String, dynamic>>>(
                             future: fetchAttendanceData(classId: widget.classID,
-                                studentId: widget.studentID??null),
+                                studentId: widget.studentID),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -275,7 +275,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                                         ),
                                       )
                                     : ListView.builder(
-                                        padding:EdgeInsets.only(top: 10),
+                                        padding:const EdgeInsets.only(top: 10),
                                         itemCount: attendanceData!.length,
                                         itemBuilder: (context, index) {
                                           final record = attendanceData![index];
@@ -293,7 +293,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                         ),
                         widget.studentID!=null?
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           alignment: Alignment.center,
                           child: ElevatedButton(
                             onPressed: () {

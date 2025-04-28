@@ -24,13 +24,14 @@ Future<List<Map<String, dynamic>>> fetchClassData() async {
     return [];
   }
 }
+
 Future<void> addTeacher(var attendanceData, BuildContext context) async {
   String adminEmail = "admin@gmail.com"; // Your admin email
   String adminPassword = "123456"; // Your admin password
 
   try {
     String email = attendanceData['email'];
-    String defaultPassword = "Password123"; 
+    String defaultPassword = "Password123";
 
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: email,
@@ -58,13 +59,11 @@ Future<void> addTeacher(var attendanceData, BuildContext context) async {
       backgroundColor: Colors.green[400],
     ));
 
-   
     await FirebaseAuth.instance.signOut(); // sign out the teacher user
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: adminEmail,
       password: adminPassword,
     );
-
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
@@ -84,8 +83,6 @@ Future<void> addTeacher(var attendanceData, BuildContext context) async {
     );
   }
 }
-
-
 
 Future<void> deleteStudent(String studentId, BuildContext context) async {
   try {
@@ -114,14 +111,14 @@ Future<void> deleteStudent(String studentId, BuildContext context) async {
             .where('students', arrayContains: {"student_id": studentId})
             .get()
             .then((classQuerySnapshot) async {
-          for (var classDoc in classQuerySnapshot.docs) {
-            await classDoc.reference.update({
-              "students": FieldValue.arrayRemove([
-                {"student_name": studentName, "student_id": studentId}
-              ])
+              for (var classDoc in classQuerySnapshot.docs) {
+                await classDoc.reference.update({
+                  "students": FieldValue.arrayRemove([
+                    {"student_name": studentName, "student_id": studentId}
+                  ])
+                });
+              }
             });
-          }
-        });
       }
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -161,7 +158,6 @@ Future<void> deleteStudent(String studentId, BuildContext context) async {
     );
   }
 }
-
 
 Future<void> updateStudentData(String studentId,
     Map<String, dynamic> updatedData, BuildContext context) async {
@@ -213,6 +209,7 @@ Future<void> updateStudentData(String studentId,
     );
   }
 }
+
 Future<void> addStudent(Map<String, dynamic> studentData, BuildContext context,
     String classId) async {
   try {
@@ -225,8 +222,9 @@ Future<void> addStudent(Map<String, dynamic> studentData, BuildContext context,
     );
 
     // Add the document to the 'students' collection
-    DocumentReference studentDocRef =
-        await FirebaseFirestore.instance.collection('students').add(studentData);
+    DocumentReference studentDocRef = await FirebaseFirestore.instance
+        .collection('students')
+        .add(studentData);
 
     // Add the student role to the 'user_role' collection
     await FirebaseFirestore.instance
@@ -248,7 +246,7 @@ Future<void> addStudent(Map<String, dynamic> studentData, BuildContext context,
         "students": FieldValue.arrayUnion([
           {
             "student_name": studentData["student_name"],
-            "student_id":studentData["student_id"],
+            "student_id": studentData["student_id"],
           }
         ])
       });
@@ -279,5 +277,30 @@ Future<void> addStudent(Map<String, dynamic> studentData, BuildContext context,
       ),
       (route) => false,
     );
+  }
+}
+
+Future<void> updatePaymentStatus(String paymentId, bool isPaid) async {
+  try {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('payments')
+        .where('payment_id', isEqualTo: paymentId)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final docId = querySnapshot.docs.first.id;
+      await FirebaseFirestore.instance
+          .collection('payments')
+          .doc(docId)
+          .update({
+            'payment': isPaid ? 2000 : 0, // Assuming 2000 as the payment amount when paid, 0 when unpaid
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+      debugPrint('Payment status updated successfully for paymentId: $paymentId');
+    } else {
+      debugPrint('Payment not found for paymentId: $paymentId');
+    }
+  } catch (e) {
+    debugPrint('Error updating payment status: $e');
   }
 }

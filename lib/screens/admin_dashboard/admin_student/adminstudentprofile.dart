@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/admin_dashboard/admin_student/AG6MStudentList.dart';
 import 'package:tutorpro/screens/onboarding/onboarding_screen.dart';
 
 import '../../../repository/admin_repository.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/text_styles.dart';
 
 class StudentsView extends StatelessWidget {
-  const StudentsView({Key? key}) : super(key: key);
+  const StudentsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class StudentsView extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Text(
+                          child: const Text(
                             'VIEW ATTENDENCE',
                             style: AppTextStyles.buttonText,
                           ),
@@ -72,12 +72,12 @@ class StudentsView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Student List',
                               style: AppTextStyles.heading,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 26, top: 30),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 26, top: 30),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -85,7 +85,7 @@ class StudentsView extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
-                                      children: const [
+                                      children: [
                                         Text(
                                           'S.No',
                                           style: AppTextStyles.listText,
@@ -122,8 +122,8 @@ class StudentsView extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: List.generate(
                                       9,
-                                      (index) => Padding(
-                                        padding: const EdgeInsets.only(top: 10),
+                                      (index) => const Padding(
+                                        padding: EdgeInsets.only(top: 10),
                                         child: Text(
                                           '0001',
                                           style: AppTextStyles.listText,
@@ -145,15 +145,15 @@ class StudentsView extends StatelessWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
+                                                const Text(
                                                   'Avishka',
                                                   style: AppTextStyles.listText,
                                                 ),
                                                 ...List.generate(
                                                   8,
-                                                  (index) => Padding(
+                                                  (index) => const Padding(
                                                     padding:
-                                                        const EdgeInsets.only(
+                                                        EdgeInsets.only(
                                                             top: 10),
                                                     child: Text(
                                                       'Lorem spein',
@@ -167,8 +167,8 @@ class StudentsView extends StatelessWidget {
                                             Column(
                                               children: List.generate(
                                                 9,
-                                                (index) => Padding(
-                                                  padding: const EdgeInsets.only(
+                                                (index) => const Padding(
+                                                  padding: EdgeInsets.only(
                                                       top: 10),
                                                   child: Text(
                                                     'VIEW',
@@ -190,7 +190,7 @@ class StudentsView extends StatelessWidget {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.circular(10),
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           'ADD STUDENTS',
                                           style: AppTextStyles.buttonText,
                                         ),

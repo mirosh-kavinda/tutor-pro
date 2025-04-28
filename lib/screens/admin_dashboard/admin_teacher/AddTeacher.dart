@@ -97,7 +97,7 @@ class _AddTeacherState extends State<AddTeacher> {
 
     return Scaffold(
       body: _isLoadingClasses
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : Stack(
@@ -125,12 +125,12 @@ class _AddTeacherState extends State<AddTeacher> {
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(40)),
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 35,
                       vertical: 20,
                     ),
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),

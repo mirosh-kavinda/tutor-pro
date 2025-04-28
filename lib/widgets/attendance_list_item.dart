@@ -7,12 +7,12 @@ class AttendanceListItem extends StatelessWidget {
   final bool isPresent;
 
   const AttendanceListItem({
-    Key? key,
+    super.key,
     required this.date,
     required this.name,
     required this.classId,
     required this.isPresent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

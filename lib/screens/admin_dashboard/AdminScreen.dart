@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tutorpro/screens/admin_dashboard/payement/payement1.dart';
+import 'package:tutorpro/screens/admin_dashboard/payement/payement2.dart';
 import 'package:tutorpro/screens/admin_dashboard/shedule/shedulescreen.dart';
 import '../onboarding/onboarding_screen.dart';
 import 'admin_teacher/teacher_list.dart';
 import 'admin_student/AdminStudent.dart';
 
 class AdminScreen extends StatelessWidget {
-  const AdminScreen({Key? key}) : super(key: key);
+  const AdminScreen({super.key});
 
   void _onGridItemTap(BuildContext context, String label, int index) {
     if (label == 'Teacher') {

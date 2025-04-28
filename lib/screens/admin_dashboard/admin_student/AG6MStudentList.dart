@@ -132,8 +132,8 @@ class Ag6mstudentlist extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
                         color: Colors.black.withOpacity(0.3),
-                        child: Row(
-                          children: const [
+                        child: const Row(
+                          children: [
                             Expanded(
                               flex: 2,
                               child: Center(

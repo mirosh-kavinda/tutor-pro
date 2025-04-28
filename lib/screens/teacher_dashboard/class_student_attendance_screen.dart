@@ -16,7 +16,7 @@ class ClassStudentAttendanceScreen extends StatefulWidget {
 class _ClassStudentAttendanceScreenState
     extends State<ClassStudentAttendanceScreen> {
   late List<dynamic> students = widget.studentList;
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   bool isSubmitEnabled = false;
 
   @override
@@ -202,7 +202,7 @@ class _ClassStudentAttendanceScreenState
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListView.builder(
-                      padding: EdgeInsets.all(0),
+                      padding: const EdgeInsets.all(0),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
                         final student = students[index];
@@ -234,7 +234,7 @@ class _ClassStudentAttendanceScreenState
                           Expanded(
                             flex: 2,
                             child: Checkbox(
-                              fillColor: MaterialStateProperty.all(
+                              fillColor: WidgetStateProperty.all(
                                 student['isPresent'] == true
                                     ? Colors.green
                                     : Colors.grey,
@@ -251,7 +251,7 @@ class _ClassStudentAttendanceScreenState
                           Expanded(
                             flex: 2,
                             child: Checkbox(
-                              fillColor: MaterialStateProperty.all(
+                              fillColor: WidgetStateProperty.all(
                                 student['isPresent'] == false
                                     ? Colors.red
                                     : Colors.grey,

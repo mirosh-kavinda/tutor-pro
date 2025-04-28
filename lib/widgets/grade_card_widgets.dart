@@ -5,10 +5,10 @@ class GradeCardWidget extends StatelessWidget {
   final String imageUrl;
 
   const GradeCardWidget({
-    Key? key,
+    super.key,
     required this.gradeNumber,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

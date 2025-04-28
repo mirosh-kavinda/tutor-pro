@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StudentsScreen extends StatelessWidget {
-  const StudentsScreen({Key? key}) : super(key: key);
+  const StudentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +135,10 @@ class _SubjectCard extends StatelessWidget {
   final String subject;
 
   const _SubjectCard({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.subject,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

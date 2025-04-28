@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 Future<Map<String, dynamic>?> getStudentData({String? studentId}) async {
     final userEmail = FirebaseAuth.instance.currentUser?.email;
-final querySnapshot;
+final QuerySnapshot<Map<String, dynamic>> querySnapshot;
     if (userEmail == null) {
       return null;
     }

@@ -170,7 +170,7 @@ class _ClassStudentListScreenState extends State<ClassStudentListScreen> {
                                         ),
                                       )
                                     : ListView.builder(
-                                        padding: EdgeInsets.only(top: 10),
+                                        padding: const EdgeInsets.only(top: 10),
                                         itemCount:
                                             classData![0]['students']!.length,
                                         itemBuilder: (context, index) {

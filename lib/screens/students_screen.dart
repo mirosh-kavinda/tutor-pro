@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/grade_card_widgets.dart';
 
 class StudentsScreen extends StatelessWidget {
-  const StudentsScreen({Key? key}) : super(key: key);
+  const StudentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

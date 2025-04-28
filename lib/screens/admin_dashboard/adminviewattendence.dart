@@ -112,10 +112,10 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             // 'Date: ${DateFormat('dd-MMM-yyyy').format(selectedDate)}',"",
                             "",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                             ),
@@ -154,8 +154,8 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     color: Colors.white.withOpacity(0.3),
-                    child: Row(
-                      children: const [
+                    child: const Row(
+                      children: [
                         Expanded(
                           flex: 2,
                           child: Text(
@@ -214,7 +214,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                             Expanded(
                               flex: 3,
                               child: Checkbox(
-                                fillColor: MaterialStateProperty.all(
+                                fillColor: WidgetStateProperty.all(
                                   student['isPresent'] == true ? Colors.green : Colors.grey,
                                 ),
                                 value: student['isPresent'] == true,
@@ -230,7 +230,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                             Expanded(
                               flex: 3,
                               child: Checkbox(
-                                fillColor: MaterialStateProperty.all(
+                                fillColor: WidgetStateProperty.all(
                                   student['isPresent'] == false ? Colors.red : Colors.grey,
                                 ),
                                 value: student['isPresent'] == false,

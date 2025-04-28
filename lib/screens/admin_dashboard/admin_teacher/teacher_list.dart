@@ -62,7 +62,7 @@ class TeacherListScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
                       Padding(
-                        padding: EdgeInsets.only(left: 20),
+                        padding: const EdgeInsets.only(left: 20),
                         child: Column(
                           crossAxisAlignment:
                               CrossAxisAlignment.start, // Align text to start
@@ -167,7 +167,7 @@ class TeacherListScreen extends StatelessWidget {
                                       ),
                                     )
                                   : ListView.builder(
-                                      padding: EdgeInsets.only(top: 10),
+                                      padding: const EdgeInsets.only(top: 10),
                                       itemCount: teachersData!.length,
                                       itemBuilder: (context, index) {
                                         final record = teachersData![index];

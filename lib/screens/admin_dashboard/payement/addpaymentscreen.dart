@@ -1,162 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddPaymentScreen extends StatelessWidget {
-  const AddPaymentScreen({super.key});
+class PaymentCollectionScreen extends StatefulWidget {
+  const PaymentCollectionScreen({super.key});
+
+  @override
+  State<PaymentCollectionScreen> createState() => _PaymentCollectionScreenState();
+}
+
+class _PaymentCollectionScreenState extends State<PaymentCollectionScreen> {
+  final CollectionReference paymentsCollection =
+      FirebaseFirestore.instance.collection('payments');
+
+  // Text controllers for the form
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController studentIdController = TextEditingController();
+  final TextEditingController paymentController = TextEditingController();
+  final TextEditingController paymentMonthController = TextEditingController();
+
+  void _addPayment() {
+    paymentsCollection.add({
+      'sNo': '000${DateTime.now().millisecondsSinceEpoch % 1000}', // sample serial number
+      'name': nameController.text,
+      'studentId': studentIdController.text,
+      'payment': paymentController.text,
+      'paymentMonth': paymentMonthController.text,
+      'lastPayment': 'paid',
+    });
+
+    // Clear the text fields after saving
+    nameController.clear();
+    studentIdController.clear();
+    paymentController.clear();
+    paymentMonthController.clear();
+  }
+
+  void _showAddPaymentDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Payment'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                ),
+                TextField(
+                  controller: studentIdController,
+                  decoration: const InputDecoration(labelText: 'Student ID'),
+                ),
+                TextField(
+                  controller: paymentController,
+                  decoration: const InputDecoration(labelText: 'Payment'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: paymentMonthController,
+                  decoration: const InputDecoration(labelText: 'Payment Month'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _addPayment();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Payment added successfully!')),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Top background image
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/images/payemnet.png', // Replace with your image path
-              fit: BoxFit.cover,
-              height: 190,
-            ),
-          ),
-          // Back arrow button
-          Positioned(
-            top: 40,
-            left: 16,
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Color.fromARGB(255, 7, 7, 7),
-                size: 30,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          // Main content
-          Column(
-            children: [
-              const SizedBox(height: 150), // Space for top image and back button
-              Expanded(
-                child: _buildFormSection(context),
-              ),
-            ],
-          ),
-        ],
+      appBar: AppBar(
+        title: const Text('Add Payment'),
+        backgroundColor: const Color(0xFF265D72),
       ),
-    );
-  }
-
-  // Widget for the form section
-  Widget _buildFormSection(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/admin_backgroun.png'), // Replace with your image path
-          fit: BoxFit.cover,
-          opacity: 0.1, // Reduce the opacity for subtle background effect
+      body: const Center(
+        child: Text(
+          'No records to display here.\nUse the + button to add new payments.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16),
         ),
-        color: Color(0xFF0066CC),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Grade 6 > Mathematics",
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 30),
-          _buildTextField(label: "NAME :"),
-          const SizedBox(height: 20),
-          _buildTextField(label: "STUDENT ID :"),
-          const SizedBox(height: 20),
-          _buildTextField(label: "PAYMENT :"),
-          const SizedBox(height: 20),
-          _buildTextField(label: "PAYMENT MONTH :"),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-                child: const Text(
-                  "SAVE",
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-                child: const Text(
-                  "EXIT",
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddPaymentDialog,
+        backgroundColor: const Color(0xFF265D72),
+        child: const Icon(Icons.add),
       ),
-    );
-  }
-
-  // Widget for each text field
-  Widget _buildTextField({required String label}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 14,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
-        ),
-      ],
     );
   }
 }
