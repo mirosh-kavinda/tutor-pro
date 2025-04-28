@@ -162,9 +162,16 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
               ),
               ElevatedButton(
                 onPressed: () async{
-                    final scheduleData = _getScheduleData();
-                
-               await sendEmail(scheduleData,context);
+            
+            Map<String, dynamic> tempParam = {
+  'date': _dateController.text.toString(),
+  'time': _timeController.text.toString(),
+  'className': _classController.text.toString(),
+  'teacherName': _teacherController.text.toString(),
+  'message': _messageController.text.toString(),
+};
+
+               await sendEmail(tempParam,context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

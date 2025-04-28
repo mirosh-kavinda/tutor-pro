@@ -1,11 +1,11 @@
 import 'package:emailjs/emailjs.dart' as emailjs;
 import 'package:flutter/material.dart';
 
-Future<bool> sendEmail(dynamic templateParams, BuildContext context) async {
+Future<bool> sendEmail( templateParams, BuildContext context) async {
   try {
     await emailjs.send(
       'service_38tmctn',
-      'template_dq6wdyi',
+      'template_ng921nh',
       templateParams,
       const emailjs.Options(
         publicKey: '_E59DG2LhtPZ3Nx51',
