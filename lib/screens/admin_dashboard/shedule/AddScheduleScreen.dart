@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tutorpro/repository/admin_repository.dart';
 
+import '../../../widgets/emailCreate.dart';
+
 class AddScheduleScreen extends StatefulWidget {
   const AddScheduleScreen({super.key});
 
@@ -158,28 +160,30 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                   ),
                 ),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
+              ElevatedButton(
+                onPressed: () async{
+                    final scheduleData = _getScheduleData();
                 
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.white,
-              //     foregroundColor: Colors.blueAccent,
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              //   ),
-              //   child: const Text(
-              //     "SEND MESSAGE",
-              //     style: TextStyle(
-              //       fontFamily: 'Poppins',
-              //       fontSize: 14,
-              //       fontWeight: FontWeight.bold,
-              //       color: Colors.black,
-              //     ),
-              //   ),
-              // ),
+               await sendEmail(scheduleData,context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                ),
+                child: const Text(
+                  "SEND MESSAGE",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ],
           ),
         ],
