@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class PaymentCollectionScreen extends StatefulWidget {
-  const PaymentCollectionScreen({super.key});
+  final String classId;
+  const PaymentCollectionScreen({super.key, required this.classId});
 
   @override
   State<PaymentCollectionScreen> createState() => _PaymentCollectionScreenState();
@@ -19,15 +21,27 @@ class _PaymentCollectionScreenState extends State<PaymentCollectionScreen> {
   final TextEditingController paymentMonthController = TextEditingController();
 
   void _addPayment() {
+     final today = DateTime.now();
+    final formattedDate = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+   
     paymentsCollection.add({
-      'sNo': '000${DateTime.now().millisecondsSinceEpoch % 1000}', // sample serial number
-      'name': nameController.text,
+      'payment_id': '000${DateTime.now().millisecondsSinceEpoch % 1000}',
+      'student_name': nameController.text,
       'studentId': studentIdController.text,
-      'payment': paymentController.text,
-      'paymentMonth': paymentMonthController.text,
-      'lastPayment': 'paid',
+      'payment':num.parse(paymentController.text),
+      'date': formattedDate,
+      'class_id': widget.classId,
     });
-
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text(
+          'Payment added successfully!',
+          style: TextStyle(
+              fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.green[400],
+      ));
+      
+      
     // Clear the text fields after saving
     nameController.clear();
     studentIdController.clear();
@@ -52,15 +66,13 @@ class _PaymentCollectionScreenState extends State<PaymentCollectionScreen> {
                   controller: studentIdController,
                   decoration: const InputDecoration(labelText: 'Student ID'),
                 ),
-                TextField(
-                  controller: paymentController,
-                  decoration: const InputDecoration(labelText: 'Payment'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  controller: paymentMonthController,
-                  decoration: const InputDecoration(labelText: 'Payment Month'),
-                ),
+               TextField(
+  controller: paymentController,
+  decoration: const InputDecoration(labelText: 'Payment'),
+  keyboardType: TextInputType.number,
+  inputFormatters: [FilteringTextInputFormatter.digitsOnly], // Restrict input to numbers only
+),
+              
               ],
             ),
           ),

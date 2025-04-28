@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tutorpro/screens/admin_dashboard/payement/payement1.dart';
-import 'package:tutorpro/screens/admin_dashboard/payement/payement2.dart';
 import 'package:tutorpro/screens/admin_dashboard/shedule/shedulescreen.dart';
 import '../onboarding/onboarding_screen.dart';
 import 'admin_teacher/teacher_list.dart';
@@ -30,7 +28,7 @@ class AdminScreen extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              const Payement1(), // you can change classId if needed
+              const   Adminstudent(isPayment: true,), // you can change classId if needed
         ),
       );
     } else if (label == 'Schedule') {

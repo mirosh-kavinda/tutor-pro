@@ -14,6 +14,17 @@ Future<List<Map<String, dynamic>>> fetchTeachersData() async {
   }
 }
 
+Future<List<Map<String, dynamic>>> fetchPayments({required String classId}) async {
+  final querySnapshot =
+      await FirebaseFirestore.instance.collection('payments').where('class_id',isEqualTo: classId).get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  } else {
+    return [];
+  }
+}
+
 Future<List<Map<String, dynamic>>> fetchClassData() async {
   final querySnapshot =
       await FirebaseFirestore.instance.collection('classes').get();

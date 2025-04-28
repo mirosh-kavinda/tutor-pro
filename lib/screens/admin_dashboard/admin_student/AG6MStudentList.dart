@@ -7,8 +7,9 @@ import '../../student_dahboard/students_attendance.dart';
 
 class Ag6mstudentlist extends StatelessWidget {
   final List<dynamic> students;
+  final bool isPayment;
    final String classId;
-  const Ag6mstudentlist({super.key, required this.students, required this.classId});
+  const Ag6mstudentlist({super.key, required this.students, required this.classId,  this.isPayment=false});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class Ag6mstudentlist extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(
                     Icons.arrow_back_ios,
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    color: Colors.white,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -63,7 +64,7 @@ class Ag6mstudentlist extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-
+  
                       // Title Row with Button
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -287,4 +288,5 @@ class Ag6mstudentlist extends StatelessWidget {
       ),
     );
   }
+
 }

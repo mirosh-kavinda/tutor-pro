@@ -46,6 +46,17 @@ class DownloadAttendanceDialog extends StatelessWidget {
          ];
       }).toList();
     }
+    else if (documentType=="payments"){
+       headers = ['Pay ID', 'Student Name','Date'];
+
+       dataRows = data.map((record) {
+        return [
+          record['payment_id'] ?? 'Unknown data',
+          record['student_name'] ?? 'Unknown data',
+          record['date'] ?? 'Unknown data',
+         ];
+      }).toList();
+    }
 
     pdf.addPage(
       pw.MultiPage(
