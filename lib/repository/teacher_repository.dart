@@ -28,6 +28,7 @@ Future<Map<String, dynamic>?> getTeacherData() async {
 
   
 Future<List<Map<String, dynamic>>> fetchClassStudentData({required String classId}) async {
+  debugPrint(classId);
   final querySnapshot = await FirebaseFirestore.instance
       .collection('classes')
       .where('class_id', isEqualTo: classId) 

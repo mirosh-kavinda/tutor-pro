@@ -18,7 +18,7 @@ class _AddTeacherState extends State<AddTeacher> {
     final TextEditingController _emailController = TextEditingController();
   final TextEditingController _teacherIdController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _subjectsController = TextEditingController();
+
   final TextEditingController _phoneController = TextEditingController();
   List<Map<String, dynamic>> _classes = [];
   bool _isLoadingClasses = true;
@@ -40,7 +40,6 @@ class _AddTeacherState extends State<AddTeacher> {
         'teacher_id': _teacherIdController.text,
         'date_of_birth': _dateController.text,
         'classes':selectedClasses ,
-        'Subject': _subjectsController.text,
         'phone_no': _phoneController.text,
       };
 
@@ -72,7 +71,6 @@ class _AddTeacherState extends State<AddTeacher> {
     _teacherIdController.dispose();
     _dateController.dispose();
    _emailController.dispose();
-    _subjectsController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
@@ -159,8 +157,7 @@ class _AddTeacherState extends State<AddTeacher> {
                                         "DOB", _dateController),
                                     _buildClassMultiSelectField(
                                         "Classes", _classes),
-                                    _buildCustomInputField(
-                                        'Subjects', _subjectsController),
+                                   
                                     _buildCustomInputField(
                                         'Phone\'s No', _phoneController),
                                   ],

@@ -2,28 +2,21 @@ import 'package:flutter/material.dart';
 import 'admin_student/AG6MStudentList.dart';
 
 class Adminviewattendence extends StatefulWidget {
-  const Adminviewattendence({super.key});
+  final List<dynamic> students;
+  const Adminviewattendence({super.key, required this.students});
 
   @override
   State<Adminviewattendence> createState() => _AdminviewattendenceState();
 }
 
 class _AdminviewattendenceState extends State<Adminviewattendence> {
-  late List<Map<String, dynamic>> students;
+  
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    students = List.generate(
-      8,
-      (index) => {
-        'name': 'Lorem Ipsum',
-        'isPresent': index % 3 == 0
-            ? true
-            : (index % 4 == 0 ? false : null), // Sample: some students pre-marked
-      },
-    );
+ 
   }
 
   Future<void> _pickDate() async {
@@ -88,7 +81,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                       onPressed: () {
                     Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Ag6mstudentlist(students: [],subjectId:"",classId: "",)),
+                    MaterialPageRoute(builder: (context) =>  Ag6mstudentlist(students: widget.students,classId: "",)),
                   );
                       },
                       style: ElevatedButton.styleFrom(
@@ -197,10 +190,10 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                   const SizedBox(height: 5),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: students.length,
+                      itemCount: widget.students.length,
                       separatorBuilder: (context, index) => const Divider(color: Colors.white30),
                       itemBuilder: (context, index) {
-                        final student = students[index];
+                        final student = widget.students[index];
                         bool isMarked = student['isPresent'] != null;
                         return Row(
                           children: [
@@ -229,7 +222,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                                     ? null
                                     : (value) {
                                         setState(() {
-                                          students[index]['isPresent'] = value == true ? true : null;
+                                          widget.students[index]['isPresent'] = value == true ? true : null;
                                         });
                                       },
                               ),
@@ -245,7 +238,7 @@ class _AdminviewattendenceState extends State<Adminviewattendence> {
                                     ? null
                                     : (value) {
                                         setState(() {
-                                          students[index]['isPresent'] = value == true ? false : null;
+                                          widget.students[index]['isPresent'] = value == true ? false : null;
                                         });
                                       },
                               ),

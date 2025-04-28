@@ -30,11 +30,21 @@ final querySnapshot;
   }
 
 
-Future<List<Map<String, dynamic>>> fetchAttendanceData({required String studentId}) async {
-  final querySnapshot = await FirebaseFirestore.instance
+Future<List<Map<String, dynamic>>> fetchAttendanceData({ String?studentId,String? classId}) async {
+ 
+  QuerySnapshot<Map<String, dynamic>> querySnapshot;
+  if(studentId!=null){
+ querySnapshot = await FirebaseFirestore.instance
       .collection('attendance')
       .where('student_id', isEqualTo: studentId) 
       .get();
+  }else{
+    querySnapshot = await FirebaseFirestore.instance
+      .collection('attendance')
+      .where('class_id',isEqualTo:classId )
+      .get();
+  }
+  
 
   if (querySnapshot.docs.isNotEmpty) {
     return querySnapshot.docs.map((doc) => doc.data()).toList();

@@ -6,8 +6,9 @@ import '../../widgets/download_pdf.dart';
 import 'student_payments.dart';
 
 class AttendanceSheetScreen extends StatefulWidget {
-  final String studentID;
-  const AttendanceSheetScreen({super.key, required this.studentID});
+  final String? studentID;
+  final String? classID;
+  const AttendanceSheetScreen({super.key,  this.studentID, this.classID});
 
   @override
   _AttendanceSheetScreenState createState() => _AttendanceSheetScreenState();
@@ -180,9 +181,9 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                         const SizedBox(height: 40),
 
                         // Header Row
-                        const Row(
+                        Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               flex: 2,
                               child: Text(
                                 'Date',
@@ -196,15 +197,15 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                              Expanded(
                               flex: 2,
                               child: Text(
-                                'Class ID',
-                                style: TextStyle(
+                                widget.studentID!=null?'Class ID':'Student ID',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               flex: 2,
                               child: Text(
                                 'Subject',
@@ -216,7 +217,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                               ),
                             ),
                             
-                             Expanded(
+                             const Expanded(
                               flex: 1,
                               child: Text(
                                 'Attend',
@@ -239,8 +240,8 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                         // Attendance List
                         Expanded(
                           child: FutureBuilder<List<Map<String, dynamic>>>(
-                            future: fetchAttendanceData(
-                                studentId: widget.studentID),
+                            future: fetchAttendanceData(classId: widget.classID,
+                                studentId: widget.studentID??null),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -280,7 +281,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                                           final record = attendanceData![index];
                                           return AttendanceListItem(
                                             date: record['date'] ?? '',
-                                            classId: record['class_id'] ?? '',
+                                            classId:  widget.studentID!=null? record['class_id'] ?? '':record['student_id'],
                                             name: record['subject'] ?? '',
                                             isPresent: record['status'],
                                           );
@@ -290,6 +291,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                             },
                           ),
                         ),
+                        widget.studentID!=null?
                         Container(
                           padding: EdgeInsets.all(8),
                           alignment: Alignment.center,
@@ -299,7 +301,7 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => StudentPaymentSheet(
-                                      studentId: widget.studentID),
+                                      studentId: widget.studentID!),
                                 ),
                               );
                             },
@@ -321,7 +323,30 @@ class _AttendanceSheetScreenState extends State<AttendanceSheetScreen> {
                               ),
                             ),
                           ),
+                        ): Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        child: const Text(
+                          'Exit',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                       ],
                     ),
                   ),

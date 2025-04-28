@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tutorpro/screens/admin_dashboard/admin_student/AG6MStudentList.dart';
 import '../../../repository/admin_repository.dart';
 import '../../onboarding/onboarding_screen.dart';
-import 'AdminSubjectgrade6.dart';
 
 class Adminstudent extends StatelessWidget {
   const Adminstudent({super.key});
 
-  void _onClassTap(BuildContext context, List<dynamic> subjects,String classId) {
+  void _onClassTap(BuildContext context, List<dynamic> students,String classId) {
  Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminSubjectgrade6(subjects:subjects,classId: classId,)),
+      MaterialPageRoute(builder: (context) => Ag6mstudentlist(students:students,classId: classId,)),
  );
   }
 
@@ -104,7 +104,7 @@ class Adminstudent extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final item = classData[index];
                             return InkWell(
-                              onTap: () => _onClassTap(context, item['subjects']!,item['class_id']!),
+                              onTap: () => _onClassTap(context, item['students']!,item['class_id']!),
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 decoration: BoxDecoration(
@@ -132,6 +132,18 @@ class Adminstudent extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Text(
                                         item['class_name']!,
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                     Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: Text(
+                                        item['subject']!,
                                         textAlign: TextAlign.start,
                                         style: const TextStyle(
                                           fontSize: 16,

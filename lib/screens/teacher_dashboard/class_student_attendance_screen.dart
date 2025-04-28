@@ -16,11 +16,15 @@ class ClassStudentAttendanceScreen extends StatefulWidget {
 class _ClassStudentAttendanceScreenState
     extends State<ClassStudentAttendanceScreen> {
   late List<dynamic> students = widget.studentList;
-  final TextEditingController _dateController = TextEditingController();
+  TextEditingController _dateController = TextEditingController();
+  bool isSubmitEnabled = false;
 
   @override
   void initState() {
     super.initState();
+    _dateController.text =
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+    _checkAttendanceCompletion();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -36,6 +40,13 @@ class _ClassStudentAttendanceScreenState
             "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
       });
     }
+  }
+
+  void _checkAttendanceCompletion() {
+    setState(() {
+      isSubmitEnabled = students.every((student) =>
+          student.containsKey('isPresent') && student['isPresent'] != null);
+    });
   }
 
   @override
@@ -232,6 +243,7 @@ class _ClassStudentAttendanceScreenState
                               onChanged: (value) {
                                 setState(() {
                                   students[index]['isPresent'] = true;
+                                  _checkAttendanceCompletion();
                                 });
                               },
                             ),
@@ -248,6 +260,7 @@ class _ClassStudentAttendanceScreenState
                               onChanged: (value) {
                                 setState(() {
                                   students[index]['isPresent'] = false;
+                                  _checkAttendanceCompletion();
                                 });
                               },
                             ),
@@ -262,31 +275,36 @@ class _ClassStudentAttendanceScreenState
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
-                        onPressed: () async{
-                          addClassAttendance(widget.classId,_dateController.text,students)
-                          .then((_) {
-                              Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const TeacherProfileCard(),
-                              ),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Attendance submitted successfully!'),
-                              ),
-                            );
-                          
-                          }).catchError((error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Error: $error'),
-                              ),
-                            );
-                          });
-                        },
+                        onPressed: isSubmitEnabled
+                            ? () async {
+                                addClassAttendance(widget.classId,
+                                        _dateController.text, students)
+                                    .then((_) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TeacherProfileCard(),
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Attendance submitted successfully!'),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Error: $error'),
+                                    ),
+                                  );
+                                });
+                              }
+                            : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor:  Colors.white,
+                          disabledBackgroundColor: Colors.grey,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 30, vertical: 14),
                           shape: RoundedRectangleBorder(

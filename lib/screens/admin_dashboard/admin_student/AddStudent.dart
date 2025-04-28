@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import '../../../repository/admin_repository.dart';
 import '../../../widgets/custom_button.dart';
 
 class AddStudent extends StatefulWidget {
-  final String subjectId;
   final String classId;
-  const AddStudent({super.key, required this.subjectId, required this.classId});
+  const AddStudent({super.key,  required this.classId});
 
   @override
   _AddStudentState createState() => _AddStudentState();
@@ -19,7 +19,6 @@ class _AddStudentState extends State<AddStudent> {
   final _studentIdController = TextEditingController();
   final _schoolController = TextEditingController();
   final _classController = TextEditingController();
-  final _subjectsController = TextEditingController();
   final _guardianNameController = TextEditingController();
   final _guardianPhoneController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -31,9 +30,7 @@ class _AddStudentState extends State<AddStudent> {
     _nameController.dispose();
     _studentIdController.dispose();
     _schoolController.dispose();
-    _classController.dispose();
-    _subjectsController.dispose();
-    _guardianNameController.dispose();
+  _guardianNameController.dispose();
     _guardianPhoneController.dispose();
     _dateController.dispose();
     _emailController.dispose();
@@ -54,12 +51,19 @@ class _AddStudentState extends State<AddStudent> {
       });
     }
   }
+
+  
+  @override
+  void initState() {
+    super.initState();
+   
+  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth <= 640;
 
-    return Scaffold(
+    return  Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -120,18 +124,7 @@ class _AddStudentState extends State<AddStudent> {
                       }
                       return null;
                     }),
-                    _buildFormField('Class:', _classController, (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the class';
-                      }
-                      return null;
-                    }),
-                    _buildFormField('Subjects:', _subjectsController, (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the subjects';
-                      }
-                      return null;
-                    }),
+                   
                     _buildFormField('Guardian\'s Name:', _guardianNameController, (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the guardian\'s name';
@@ -157,6 +150,7 @@ class _AddStudentState extends State<AddStudent> {
                         fontSize: isSmallScreen ? 12 : 14,
                         onPressed: () async{
                           if (_formKey.currentState!.validate()) {
+          
                             // Collect form data
                             final studentData = {
                               'student_name': _nameController.text,
@@ -164,7 +158,7 @@ class _AddStudentState extends State<AddStudent> {
                               'date_of_birth': _dateController.text,
                               'school': _schoolController.text,
                               'class': _classController.text,
-                              'subjects': [_subjectsController.text],
+                            
                               'guardian_name': _guardianNameController.text,
                               'guardian_phone': _guardianPhoneController.text,
                               'email':_emailController.text,
@@ -172,7 +166,7 @@ class _AddStudentState extends State<AddStudent> {
                             };
 
                             // Handle submit action
-                           await  addStudent(studentData,context,widget.subjectId,widget.classId);
+                           await  addStudent(studentData,context,widget.classId);
                           }
                         },
                       ),
@@ -247,5 +241,45 @@ class _AddStudentState extends State<AddStudent> {
     );
   }
 
+  Widget _buildClassMultiSelectField(
+    String label, List<Map<String, dynamic>> classes) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 4), // Reduced padding
+    child: MultiSelectDialogField(
+      dialogHeight: 400,
+      items: classes.map((classItem) {
+        return MultiSelectItem<String>(
+          classItem['class_id'].toString(),
+          classItem['class_name'],
+        );
+      }).toList(),
+      title: Text(
+        label,
+        style: const TextStyle(fontSize: 14), // Reduced font size
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      buttonText: Text(
+        label,
+        style: const TextStyle(fontSize: 14), // Reduced font size
+      ),
+      onConfirm: (selectedValues) {
+        // Handle selected values
+        debugPrint('Selected class IDs: $selectedValues');
+      },
+      validator: (selectedValues) {
+        if (selectedValues == null || selectedValues.isEmpty) {
+          return '$label is required';
+        }
+        return null;
+      },
+    ),
+  );
 }
+}
+
+
+
 

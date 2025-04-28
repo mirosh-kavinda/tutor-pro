@@ -3,11 +3,12 @@ import 'package:tutorpro/screens/admin_dashboard/admin_student/AddStudent.dart';
 import 'package:tutorpro/screens/admin_dashboard/admin_student/adminstudentprofile.dart';
 import 'package:tutorpro/screens/admin_dashboard/adminviewattendence.dart';
 
+import '../../student_dahboard/students_attendance.dart';
+
 class Ag6mstudentlist extends StatelessWidget {
   final List<dynamic> students;
-  final String subjectId;
    final String classId;
-  const Ag6mstudentlist({super.key, required this.students, required this.subjectId, required this.classId});
+  const Ag6mstudentlist({super.key, required this.students, required this.classId});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class Ag6mstudentlist extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const Adminviewattendence()),
+                                            AttendanceSheetScreen(classID:classId ,)),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -188,7 +189,7 @@ class Ag6mstudentlist extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>  AddStudent(subjectId: subjectId,classId:classId ,)),
+                                  builder: (context) =>  AddStudent(classId:classId ,)),
                             );
                           },
                           style: ElevatedButton.styleFrom(

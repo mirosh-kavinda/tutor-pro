@@ -230,7 +230,7 @@ class _ClassStudentListScreenState extends State<ClassStudentListScreen> {
                                             ClassStudentAttendanceScreen(
                                               classId: widget.classId,
                                               studentList: classData?[0]
-                                                  ['students'],
+                                                  ['students']??[],
                                             )),
                                   );
                                 } else {

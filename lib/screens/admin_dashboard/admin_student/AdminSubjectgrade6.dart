@@ -11,7 +11,7 @@ class AdminSubjectgrade6 extends StatelessWidget {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Ag6mstudentlist(students:students,subjectId:subjectId,classId: classId,)),
+      MaterialPageRoute(builder: (context) => Ag6mstudentlist(students:students,classId: classId,)),
     );
   }
 
